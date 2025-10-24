@@ -50,7 +50,7 @@ while running:
                 dir_x = -1
             elif event.key == SDLK_RIGHT:
                 dir_x = 1
-            elif event.key == SDLK_SPACE:
+            elif event.key == SDLK_UP:
                 if not is_jumping:
                     is_jumping = True
                     jump_time = 0
