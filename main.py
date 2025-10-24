@@ -7,22 +7,24 @@ character1 = load_image('character1.motion/char1_Idle.png')
 
 char1_x = 400
 char1_y = 300
-frame = 0  # 애니메이션 프레임
+frame = 0
+dir_x = 0
+dir_y = 0
 
 running = True
 while running:
 
     clear_canvas()
 
-    # Idle 애니메이션 (10프레임)
     character1.clip_draw(frame * 200, 0, 200, 200, char1_x, char1_y, 200, 200)
 
-    # 프레임 업데이트
     frame = (frame + 1) % 8
+
+    char1_x += dir_x * 5
+    char1_y += dir_y * 5
 
     update_canvas()
 
-    #이벤트 처리
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -30,6 +32,20 @@ while running:
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 running = False
+            elif event.key == SDLK_LEFT:
+                dir_x = -1
+            elif event.key == SDLK_RIGHT:
+                dir_x = 1
+            elif event.key == SDLK_UP:
+                dir_y = 1
+            elif event.key == SDLK_DOWN:
+                dir_y = -1
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_LEFT or event.key == SDLK_RIGHT:
+                dir_x = 0
+            elif event.key == SDLK_UP or event.key == SDLK_DOWN:
+                dir_y = 0
+
 
     delay(0.05)
 
