@@ -36,16 +36,9 @@ while running:
                 dir_x = -1
             elif event.key == SDLK_RIGHT:
                 dir_x = 1
-            elif event.key == SDLK_UP:
-                dir_y = 1
-            elif event.key == SDLK_DOWN:
-                dir_y = -1
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_LEFT or event.key == SDLK_RIGHT:
                 dir_x = 0
-            elif event.key == SDLK_UP or event.key == SDLK_DOWN:
-                dir_y = 0
-
 
     delay(0.05)
 
