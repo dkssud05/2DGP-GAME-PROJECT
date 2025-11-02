@@ -1,5 +1,5 @@
 from pico2d import *
-from boy import Boy
+from character1 import Boy
 
 open_canvas(800, 600)
 
