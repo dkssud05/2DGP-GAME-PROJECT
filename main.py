@@ -3,7 +3,7 @@ from character1 import Character1
 
 open_canvas(800, 600)
 
-boy = Boy()
+character1 = Character1()
 
 running = True
 while running:
