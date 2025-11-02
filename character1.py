@@ -1,6 +1,6 @@
 from pico2d import *
 
-class character1:
+class Character1:
     STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
 
     def __init__(self):
