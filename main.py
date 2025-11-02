@@ -9,8 +9,8 @@ running = True
 while running:
     clear_canvas()
 
-    boy.update()
-    boy.draw()
+    character1.update()
+    character1.draw()
 
     update_canvas()
 
@@ -21,7 +21,7 @@ while running:
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
         else:
-            boy.handle_event(event)
+            character1.handle_event(event)
 
     delay(0.05)
 
