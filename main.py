@@ -1,9 +1,11 @@
 from pico2d import *
 from character1 import Character1
+from character2 import Character2
 
 open_canvas(800, 600)
 
 character1 = Character1()
+character2 = Character2()
 
 running = True
 while running:
@@ -11,6 +13,9 @@ while running:
 
     character1.update()
     character1.draw()
+
+    character2.update()
+    character2.draw()
 
     update_canvas()
 
