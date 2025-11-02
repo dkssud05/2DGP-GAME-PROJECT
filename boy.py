@@ -8,6 +8,7 @@ class Boy:
         self.image = load_image('character1.motion/char1_Idle.png')
         self.is_jumping = False
         self.jump_time = 0
+        self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
 
     def update(self):
         self.frame = (self.frame + 1) % 8
@@ -28,15 +29,19 @@ class Boy:
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
-            if event.key == SDLK_LEFT:
-                self.dir = -1
-            elif event.key == SDLK_RIGHT:
-                self.dir = 1
+            if event.key in self.keys:
+                self.keys[event.key] = True
             elif event.key == SDLK_UP:
                 if not self.is_jumping:
                     self.is_jumping = True
                     self.jump_time = 0
         elif event.type == SDL_KEYUP:
-            if event.key == SDLK_LEFT or event.key == SDLK_RIGHT:
-                self.dir = 0
+            if event.key in self.keys:
+                self.keys[event.key] = False
 
+        if self.keys[SDLK_LEFT] and not self.keys[SDLK_RIGHT]:
+            self.dir = -1
+        elif self.keys[SDLK_RIGHT] and not self.keys[SDLK_LEFT]:
+            self.dir = 1
+        else:
+            self.dir = 0
