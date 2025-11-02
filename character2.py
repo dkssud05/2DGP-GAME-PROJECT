@@ -1,13 +1,13 @@
 from pico2d import *
 
-class Character1:
+class Character2:
     STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
 
     def __init__(self):
-        self.x, self.y = 400, 300
+        self.x, self.y = 600, 300
         self.frame = 0
         self.dir = 0
-        self.face_dir = 1
+        self.face_dir = -1
         self.state = self.STATE_IDLE
         self.idle_image = load_image('character2.motion/char2_Idle.png')
         self.run_image = load_image('character2.motion/char2_Run.png')
@@ -20,7 +20,7 @@ class Character1:
         self.ground_y = 300
         self.is_attacking = False
         self.attack_frame_count = 0
-        self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
+        self.keys = {SDLK_a: False, SDLK_d: False}
 
     def update(self):
         if self.state == self.STATE_IDLE:
@@ -66,14 +66,14 @@ class Character1:
                 self.image = self.idle_image
                 self.frame = 0
         elif not self.is_attacking:
-            if self.keys[SDLK_LEFT] and not self.keys[SDLK_RIGHT]:
+            if self.keys[SDLK_a] and not self.keys[SDLK_d]:
                 self.dir = -1
                 self.face_dir = -1
                 if self.state != self.STATE_RUN:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
                     self.frame = 0
-            elif self.keys[SDLK_RIGHT] and not self.keys[SDLK_LEFT]:
+            elif self.keys[SDLK_d] and not self.keys[SDLK_a]:
                 self.dir = 1
                 self.face_dir = 1
                 if self.state != self.STATE_RUN:
@@ -97,7 +97,7 @@ class Character1:
         if event.type == SDL_KEYDOWN:
             if event.key in self.keys:
                 self.keys[event.key] = True
-            elif event.key == SDLK_UP:
+            elif event.key == SDLK_w:
                 if not self.is_jumping and not self.is_attacking:
                     self.ground_y = self.y
                     self.is_jumping = True
@@ -106,7 +106,7 @@ class Character1:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
                     self.dir = 0
-            elif event.key == SDLK_z:
+            elif event.key == SDLK_s:
                 if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
                     self.attack_frame_count = 0
