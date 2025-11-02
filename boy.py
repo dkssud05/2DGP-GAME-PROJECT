@@ -7,6 +7,7 @@ class Boy:
         self.x, self.y = 400, 300
         self.frame = 0
         self.dir = 0
+        self.face_dir = 1
         self.state = self.STATE_IDLE
         self.idle_image = load_image('character1.motion/char1_Idle.png')
         self.run_image = load_image('character1.motion/char1_Run.png')
@@ -67,12 +68,14 @@ class Boy:
         elif not self.is_attacking:
             if self.keys[SDLK_LEFT] and not self.keys[SDLK_RIGHT]:
                 self.dir = -1
+                self.face_dir = -1
                 if self.state != self.STATE_RUN:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
                     self.frame = 0
             elif self.keys[SDLK_RIGHT] and not self.keys[SDLK_LEFT]:
                 self.dir = 1
+                self.face_dir = 1
                 if self.state != self.STATE_RUN:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
@@ -85,7 +88,10 @@ class Boy:
                     self.frame = 0
 
     def draw(self):
-        self.image.clip_draw(self.frame * 200, 0, 200, 200, self.x, self.y, 200, 200)
+        if self.face_dir == 1:
+            self.image.clip_draw(self.frame * 200, 0, 200, 200, self.x, self.y, 200, 200)
+        else:
+            self.image.clip_composite_draw(self.frame * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
