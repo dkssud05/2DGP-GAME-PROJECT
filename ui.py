@@ -9,4 +9,3 @@ class UI:
 
     def draw(self):
         pass
-
