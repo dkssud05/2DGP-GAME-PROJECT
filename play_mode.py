@@ -35,17 +35,12 @@ def update():
     game_world.update()
 
 def draw():
-    global characters
-
     clear_canvas()
-
-    for char in characters:
-        char.draw()
-
+    game_world.render()
     update_canvas()
 
 def finish():
-    pass
+    game_world.clear()
 
 def pause():
     pass
