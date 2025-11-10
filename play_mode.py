@@ -1,6 +1,7 @@
 from pico2d import *
 import game_framework
 import game_world
+from background import Background
 from character1 import Character1
 from character2 import Character2
 from character3 import Character3
@@ -22,6 +23,9 @@ def init():
     global characters
 
     game_world.world = [[], []]
+
+    background = Background()
+    game_world.add_object(background, 0)
 
     character1 = Character1()
     character2 = Character2()
