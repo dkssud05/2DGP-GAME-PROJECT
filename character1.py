@@ -22,8 +22,8 @@ class Character1:
         self.attack_frame_count = 0
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
 
-        self.max_hp = 100
-        self.hp = 100
+        self.max_hp = 200
+        self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
 
