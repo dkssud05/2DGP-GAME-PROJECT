@@ -3,6 +3,20 @@ from pico2d import *
 class Character1:
     STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
 
+    PIXEL_PER_METER = (10.0 / 0.3)
+    RUN_SPEED_KMPH = 21.0
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+    TIME_PER_ACTION = 0.5
+    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+    FRAMES_PER_IDLE = 8
+    FRAMES_PER_RUN = 8
+    FRAMES_PER_JUMP = 2
+    FRAMES_PER_FALL = 2
+    FRAMES_PER_ATTACK = 6
+
     def __init__(self):
         self.x, self.y = 400, 100
         self.frame = 0
