@@ -4,7 +4,7 @@ class Character2:
     STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
 
     def __init__(self):
-        self.x, self.y = 600, 300
+        self.x, self.y = 600, 100
         self.frame = 0
         self.dir = 0
         self.face_dir = 1
