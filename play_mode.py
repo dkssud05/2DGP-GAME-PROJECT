@@ -29,6 +29,7 @@ def init():
 
     game_world.add_object(character1, 1)
     game_world.add_object(character2, 1)
+    game_world.add_object(character3, 1)
 
 def update():
     pass
