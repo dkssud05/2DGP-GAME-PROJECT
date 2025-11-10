@@ -35,3 +35,12 @@ def draw():
         char.draw()
 
     update_canvas()
+
+def finish():
+    pass
+
+def pause():
+    pass
+
+def resume():
+    pass
