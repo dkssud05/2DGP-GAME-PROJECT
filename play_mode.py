@@ -21,6 +21,8 @@ def handle_events():
 def init():
     global characters
 
+    game_world.world = [[], []]
+
     character1 = Character1()
     character2 = Character2()
     character3 = Character3()
