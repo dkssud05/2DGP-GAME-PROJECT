@@ -32,7 +32,7 @@ def init():
     game_world.add_object(character3, 1)
 
 def update():
-    pass
+    game_world.update()
 
 def draw():
     global characters
