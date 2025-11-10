@@ -7,7 +7,7 @@ class Character2:
         self.x, self.y = 600, 300
         self.frame = 0
         self.dir = 0
-        self.face_dir = -1
+        self.face_dir = 1
         self.state = self.STATE_IDLE
         self.idle_image = load_image('character2.motion/char2_Idle.png')
         self.run_image = load_image('character2.motion/char2_Run.png')
@@ -20,7 +20,12 @@ class Character2:
         self.ground_y = 300
         self.is_attacking = False
         self.attack_frame_count = 0
-        self.keys = {SDLK_a: False, SDLK_d: False}
+        self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
+
+        self.max_hp = 100
+        self.hp = 100
+        self.is_hit = False
+        self.hit_cooldown = 0
 
     def update(self):
         if self.state == self.STATE_IDLE:
@@ -66,14 +71,14 @@ class Character2:
                 self.image = self.idle_image
                 self.frame = 0
         elif not self.is_attacking:
-            if self.keys[SDLK_a] and not self.keys[SDLK_d]:
+            if self.keys[SDLK_LEFT] and not self.keys[SDLK_RIGHT]:
                 self.dir = -1
                 self.face_dir = -1
                 if self.state != self.STATE_RUN:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
                     self.frame = 0
-            elif self.keys[SDLK_d] and not self.keys[SDLK_a]:
+            elif self.keys[SDLK_RIGHT] and not self.keys[SDLK_LEFT]:
                 self.dir = 1
                 self.face_dir = 1
                 if self.state != self.STATE_RUN:
@@ -97,7 +102,7 @@ class Character2:
         if event.type == SDL_KEYDOWN:
             if event.key in self.keys:
                 self.keys[event.key] = True
-            elif event.key == SDLK_w:
+            elif event.key == SDLK_UP:
                 if not self.is_jumping and not self.is_attacking:
                     self.ground_y = self.y
                     self.is_jumping = True
@@ -106,7 +111,7 @@ class Character2:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
                     self.dir = 0
-            elif event.key == SDLK_s:
+            elif event.key == SDLK_z:
                 if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
                     self.attack_frame_count = 0
