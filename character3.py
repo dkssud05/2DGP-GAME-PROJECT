@@ -14,7 +14,6 @@ class Character3:
     FRAMES_PER_IDLE = 8
     FRAMES_PER_RUN = 8
     FRAMES_PER_JUMP = 2
-    FRAMES_PER_FALL = 2
     FRAMES_PER_ATTACK = 6
 
     def __init__(self):
