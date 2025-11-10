@@ -14,6 +14,9 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        else:
+            for char in characters:
+                char.handle_event(event)
 
 def init():
     global characters
