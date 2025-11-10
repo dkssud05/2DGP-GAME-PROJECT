@@ -24,6 +24,11 @@ class Character3:
         # Character3 전용 조작키 (J, L, I, K)
         self.keys = {SDLK_j: False, SDLK_l: False}
 
+        self.max_hp = 200
+        self.hp = 200
+        self.is_hit = False
+        self.hit_cooldown = 0
+
     def update(self):
         if self.state == self.STATE_IDLE:
             self.frame = (self.frame + 1) % 8
