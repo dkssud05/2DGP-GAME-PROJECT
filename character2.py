@@ -29,7 +29,7 @@ class Character2:
 
     def update(self):
         if self.state == self.STATE_IDLE:
-            self.frame = (self.frame + 1) % 8
+            self.frame = (self.frame + 1) % 4
         elif self.state == self.STATE_RUN:
             self.frame = (self.frame + 1) % 8
         elif self.state == self.STATE_JUMP:
@@ -38,7 +38,7 @@ class Character2:
             self.frame = (self.frame + 1) % 2
         elif self.state == self.STATE_ATTACK:
             if self.attack_frame_count % 3 == 0:
-                self.frame = (self.frame + 1) % 6
+                self.frame = (self.frame + 1) % 4
             self.attack_frame_count += 1
             if self.attack_frame_count >= 18:
                 self.is_attacking = False
