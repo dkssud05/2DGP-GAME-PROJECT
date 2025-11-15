@@ -122,20 +122,20 @@ class Character1:
                 self.keys[event.key] = True
             elif event.key == SDLK_UP:
                 if not self.is_jumping and not self.is_attacking:
-                    self.ground_y = self.y
+                    self.ground_y = self.y  # 현재 y 위치를 ground_y로 저장
                     self.is_jumping = True
-                    self.jump_time = 0
-                    self.frame = 0
+                    self.jump_velocity = self.initial_jump_velocity
+                    self.frame = 0.0
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
-                    self.dir = 0
             elif event.key == SDLK_z:
                 if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
-                    self.attack_frame_count = 0
-                    self.frame = 0
+                    self.attack_time = 0
+                    self.frame = 0.0
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
         elif event.type == SDL_KEYUP:
             if event.key in self.keys:
                 self.keys[event.key] = False
+
