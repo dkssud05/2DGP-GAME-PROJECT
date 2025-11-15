@@ -4,10 +4,12 @@ import game_world
 
 image = None
 running = True
+start_time = 0
 
 def init():
     global image
     image = load_image('title.png')
+    start_time = get_time()
 
 def finish():
     global image
@@ -15,6 +17,9 @@ def finish():
 
 def update():
     global running
+    if get_time() - start_time > 2.0:
+        import play_mode
+        game_framework.change_mode(play_mode)
 
 def draw():
     clear_canvas()
