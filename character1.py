@@ -30,7 +30,8 @@ class Character1:
         self.attack_image = load_image('character1.motion/char1_Attack1.png')
         self.image = self.idle_image
         self.is_jumping = False
-        self.jump_time = 0
+        self.gravity = 400
+        self.initial_jump_velocity = 100
         self.ground_y = 300
         self.is_attacking = False
         self.attack_frame_count = 0
