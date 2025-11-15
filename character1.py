@@ -36,6 +36,8 @@ class Character1:
         self.ground_y = 300
         self.is_attacking = False
         self.attack_frame_count = 0
+        self.attack_time = 0
+        self.attack_duration = 0.3
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
 
         self.max_hp = 200
