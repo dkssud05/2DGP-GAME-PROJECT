@@ -17,7 +17,7 @@ def finish():
 
 def update():
     global running
-    if get_time() - start_time > 2.0:
+    if get_time() - start_time > 3.0:
         import play_mode
         game_framework.change_mode(play_mode)
 
