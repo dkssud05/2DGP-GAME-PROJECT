@@ -2,17 +2,24 @@ from pico2d import *
 import game_framework
 import game_world
 
+image = None
+running = True
+
 def init():
-    pass
+    global image
+    image = load_image('title.png')
 
 def finish():
-    pass
+    global image
+    del image
 
 def update():
-    pass
+    global running
 
 def draw():
-    pass
+    clear_canvas()
+    image.draw(400, 300)
+    update_canvas()
 
 def handle_events():
     events = get_events()
