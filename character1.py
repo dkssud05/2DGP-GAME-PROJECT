@@ -37,7 +37,7 @@ class Character1:
         self.is_attacking = False
         self.attack_frame_count = 0
         self.attack_time = 0
-        self.attack_duration = 0.3
+        self.attack_duration = 0.5
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False}
 
         self.max_hp = 200
@@ -57,12 +57,11 @@ class Character1:
         elif self.state == self.STATE_FALL:
             self.frame = (self.frame + self.FRAMES_PER_JUMP * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_JUMP
         elif self.state == self.STATE_ATTACK:
-            if self.attack_frame_count % 3 == 0:
-                self.frame = (self.frame + 1) % 6
-            self.attack_frame_count += 1
-            if self.attack_frame_count >= 18:
+            self.frame = (self.frame + self.FRAMES_PER_ATTACK * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_ATTACK
+            self.attack_time += frame_time
+            if self.attack_time >= self.attack_duration:
                 self.is_attacking = False
-                self.attack_frame_count = 0
+                self.attack_time = 0
                 if self.dir != 0:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
