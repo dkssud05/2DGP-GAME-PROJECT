@@ -30,8 +30,9 @@ class Character1:
         self.attack_image = load_image('character1.motion/char1_Attack1.png')
         self.image = self.idle_image
         self.is_jumping = False
-        self.gravity = 400
-        self.initial_jump_velocity = 100
+        self.jump_velocity = 0
+        self.gravity = 800
+        self.initial_jump_velocity = 400
         self.ground_y = 300
         self.is_attacking = False
         self.attack_frame_count = 0
@@ -72,17 +73,17 @@ class Character1:
             self.x += self.dir * self.RUN_SPEED_PPS * frame_time
 
         if self.is_jumping:
-            if self.state == self.STATE_JUMP and (10 - self.jump_time) < 0:
+            self.jump_velocity -= self.gravity * frame_time
+            self.y += self.jump_velocity * frame_time
+
+            if self.jump_velocity < 0 and self.state == self.STATE_JUMP:
                 self.state = self.STATE_FALL
                 self.image = self.fall_image
                 self.frame = 0
 
-            if self.jump_time < 20:
-                self.y += (10 - self.jump_time) * 2
-                self.jump_time += 1
-            else:
+            if self.y <= self.ground_y:
                 self.is_jumping = False
-                self.jump_time = 0
+                self.jump_velocity = 0
                 self.y = self.ground_y
                 self.state = self.STATE_IDLE
                 self.image = self.idle_image
