@@ -47,6 +47,7 @@ def draw():
     update_canvas()
 
 def handle_events():
+    global highlighted
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -54,6 +55,12 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.quit()
+            elif event.key == SDLK_LEFT:
+                # 왼쪽 방향키: 이전 캐릭터 선택
+                highlighted = max(1, highlighted - 1)
+            elif event.key == SDLK_RIGHT:
+                # 오른쪽 방향키: 다음 캐릭터 선택
+                highlighted = min(3, highlighted + 1)
 
 def pause():
     pass
