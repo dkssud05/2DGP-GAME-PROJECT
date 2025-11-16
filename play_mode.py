@@ -40,7 +40,7 @@ def init():
         character1 = Character3()
         character1.x = 200
 
-    character1.player_id = 1
+    character1.player_id = 2
     game_world.add_object(character1, 1)
     characters.append(character1)
 
@@ -57,7 +57,7 @@ def init():
         character2 = Character1()
         character2.x = 600
 
-    character2.player_id = 2
+    character2.player_id = 1
     game_world.add_object(character2, 1)
     characters.append(character2)
 
