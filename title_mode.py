@@ -18,8 +18,8 @@ def finish():
 def update():
     global running
     if get_time() - start_time > 3.0:
-        import play_mode
-        game_framework.change_mode(play_mode)
+        import character_select_mode
+        game_framework.change_mode(character_select_mode)
 
 def draw():
     clear_canvas()
