@@ -30,19 +30,25 @@ def draw():
     clear_canvas()
 
     if highlighted == 1:
-        char1_image.clip_draw(0, 0, 200, 200, 200, 300, 180, 180)
-    else:
+        draw_rectangle(200 - 80, 300 - 80, 200 + 80, 300 + 80)
         char1_image.clip_draw(0, 0, 200, 200, 200, 300, 150, 150)
+    else:
+        draw_rectangle(200 - 70, 300 - 70, 200 + 70, 300 + 70)
+        char1_image.clip_draw(0, 0, 200, 200, 200, 300, 130, 130)
 
     if highlighted == 2:
-        char2_image.clip_draw(0, 0, 200, 200, 400, 300, 180, 180)
-    else:
+        draw_rectangle(400 - 80, 300 - 80, 400 + 80, 300 + 80)
         char2_image.clip_draw(0, 0, 200, 200, 400, 300, 150, 150)
+    else:
+        draw_rectangle(400 - 70, 300 - 70, 400 + 70, 300 + 70)
+        char2_image.clip_draw(0, 0, 200, 200, 400, 300, 130, 130)
 
     if highlighted == 3:
-        char3_image.clip_draw(0, 0, 200, 200, 600, 300, 180, 180)
-    else:
+        draw_rectangle(600 - 80, 300 - 80, 600 + 80, 300 + 80)
         char3_image.clip_draw(0, 0, 200, 200, 600, 300, 150, 150)
+    else:
+        draw_rectangle(600 - 70, 300 - 70, 600 + 70, 300 + 70)
+        char3_image.clip_draw(0, 0, 200, 200, 600, 300, 130, 130)
 
     update_canvas()
 
