@@ -5,6 +5,7 @@ def init():
     pass
 
 def finish():
+    pass
 
 def update():
     pass
