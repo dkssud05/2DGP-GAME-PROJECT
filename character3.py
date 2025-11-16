@@ -23,7 +23,6 @@ class Character3:
         self.dir = 0
         self.face_dir = 1
         self.state = self.STATE_IDLE
-        # Character3 전용 이미지 (character3.motion 폴더 사용)
         self.idle_image = load_image('character3.motion/char3_Idle.png')
         self.run_image = load_image('character3.motion/char3_Run.png')
         self.jump_image = load_image('character3.motion/char3_Jump.png')
@@ -38,8 +37,8 @@ class Character3:
         self.is_attacking = False
         self.attack_time = 0
         self.attack_duration = 0.5
-        # Character3 전용 조작키 (J, L, I, K)
-        self.keys = {SDLK_j: False, SDLK_l: False}
+        self.player_id = 1
+        self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False, SDLK_a: False, SDLK_d: False}
 
         self.max_hp = 200
         self.hp = 200
@@ -91,14 +90,19 @@ class Character3:
                 self.image = self.idle_image
                 self.frame = 0
         elif not self.is_attacking:
-            if self.keys[SDLK_j] and not self.keys[SDLK_l]:
+            if self.player_id == 1:
+                left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+            else:
+                left_key, right_key = SDLK_a, SDLK_d
+
+            if self.keys[left_key] and not self.keys[right_key]:
                 self.dir = -1
                 self.face_dir = -1
                 if self.state != self.STATE_RUN:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
                     self.frame = 0
-            elif self.keys[SDLK_l] and not self.keys[SDLK_j]:
+            elif self.keys[right_key] and not self.keys[left_key]:
                 self.dir = 1
                 self.face_dir = 1
                 if self.state != self.STATE_RUN:
@@ -119,10 +123,19 @@ class Character3:
             self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
 
     def handle_event(self, event):
+        if self.player_id == 1:
+            left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+            jump_key = SDLK_UP
+            attack_key = SDLK_RSHIFT
+        else:
+            left_key, right_key = SDLK_a, SDLK_d
+            jump_key = SDLK_w
+            attack_key = SDLK_LSHIFT
+
         if event.type == SDL_KEYDOWN:
-            if event.key in self.keys:
+            if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = True
-            elif event.key == SDLK_i:  # Jump key
+            elif event.key == jump_key:
                 if not self.is_jumping and not self.is_attacking:
                     self.ground_y = self.y
                     self.is_jumping = True
@@ -130,7 +143,7 @@ class Character3:
                     self.frame = 0.0
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
-            elif event.key == SDLK_k:  # Attack key
+            elif event.key == attack_key:
                 if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
                     self.attack_time = 0
@@ -138,5 +151,5 @@ class Character3:
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
         elif event.type == SDL_KEYUP:
-            if event.key in self.keys:
+            if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = False
