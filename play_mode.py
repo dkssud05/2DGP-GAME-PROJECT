@@ -40,13 +40,13 @@ def init():
         character1 = Character3()
         character1.x = 200
 
-    character1.player_id = 1  # 1P
+    character1.player_id = 1
     game_world.add_object(character1, 1)
     characters.append(character1)
 
     if character_select_mode.selected_character2 == 1:
         character2 = Character1()
-        character2.x = 600  # 오른쪽 위치
+        character2.x = 600
     elif character_select_mode.selected_character2 == 2:
         character2 = Character2()
         character2.x = 600
@@ -57,7 +57,7 @@ def init():
         character2 = Character1()
         character2.x = 600
 
-    character2.player_id = 2  # 2P
+    character2.player_id = 2
     game_world.add_object(character2, 1)
     characters.append(character2)
 
