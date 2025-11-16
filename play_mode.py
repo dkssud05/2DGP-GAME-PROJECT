@@ -29,13 +29,11 @@ def init():
 
     character1 = Character1()
     character2 = Character2()
-    character3 = Character3()
 
     game_world.add_object(character1, 1)
     game_world.add_object(character2, 1)
-    game_world.add_object(character3, 1)
 
-    characters = [character1, character2, character3]
+    characters = [character1, character2]
 
 def update():
     game_world.update()
