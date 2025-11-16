@@ -28,16 +28,38 @@ def init():
     background = Background()
     game_world.add_object(background, 0)
 
-    # 선택된 캐릭터에 따라 생성
-    if character_select_mode.selected_character == 1:
-        character = Character1()
-    elif character_select_mode.selected_character == 2:
-        character = Character2()
-    else:  # 3 or None (default)
-        character = Character3()
+    characters = []
 
-    game_world.add_object(character, 1)
-    characters = [character]
+    if character_select_mode.selected_character == 1:
+        character1 = Character1()
+        character1.x = 200
+    elif character_select_mode.selected_character == 2:
+        character1 = Character2()
+        character1.x = 200
+    else:
+        character1 = Character3()
+        character1.x = 200
+
+    character1.player_id = 1  # 1P
+    game_world.add_object(character1, 1)
+    characters.append(character1)
+
+    if character_select_mode.selected_character2 == 1:
+        character2 = Character1()
+        character2.x = 600  # 오른쪽 위치
+    elif character_select_mode.selected_character2 == 2:
+        character2 = Character2()
+        character2.x = 600
+    elif character_select_mode.selected_character2 == 3:
+        character2 = Character3()
+        character2.x = 600
+    else:
+        character2 = Character1()
+        character2.x = 600
+
+    character2.player_id = 2  # 2P
+    game_world.add_object(character2, 1)
+    characters.append(character2)
 
 
 def update():
