@@ -1,4 +1,5 @@
 from pico2d import *
+import game_framework
 
 class Character3:
     STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
@@ -18,7 +19,7 @@ class Character3:
 
     def __init__(self):
         self.x, self.y = 500, 100
-        self.frame = 0
+        self.frame = 0.0
         self.dir = 0
         self.face_dir = 1
         self.state = self.STATE_IDLE
@@ -30,10 +31,13 @@ class Character3:
         self.attack_image = load_image('character3.motion/char3_Attack1.png')
         self.image = self.idle_image
         self.is_jumping = False
-        self.jump_time = 0
+        self.jump_velocity = 0
+        self.gravity = 800
+        self.initial_jump_velocity = 400
         self.ground_y = 300
         self.is_attacking = False
-        self.attack_frame_count = 0
+        self.attack_time = 0
+        self.attack_duration = 0.5
         # Character3 전용 조작키 (J, L, I, K)
         self.keys = {SDLK_j: False, SDLK_l: False}
 
@@ -43,21 +47,22 @@ class Character3:
         self.hit_cooldown = 0
 
     def update(self):
+        frame_time = game_framework.frame_time
+
         if self.state == self.STATE_IDLE:
-            self.frame = (self.frame + 1) % 8
+            self.frame = (self.frame + self.FRAMES_PER_IDLE * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_IDLE
         elif self.state == self.STATE_RUN:
-            self.frame = (self.frame + 1) % 8
+            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_RUN
         elif self.state == self.STATE_JUMP:
-            self.frame = (self.frame + 1) % 2
+            self.frame = (self.frame + self.FRAMES_PER_JUMP * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_JUMP
         elif self.state == self.STATE_FALL:
-            self.frame = (self.frame + 1) % 2
+            self.frame = (self.frame + self.FRAMES_PER_JUMP * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_JUMP
         elif self.state == self.STATE_ATTACK:
-            if self.attack_frame_count % 3 == 0:
-                self.frame = (self.frame + 1) % 6
-            self.attack_frame_count += 1
-            if self.attack_frame_count >= 18:
+            self.frame = (self.frame + self.FRAMES_PER_ATTACK * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_ATTACK
+            self.attack_time += frame_time
+            if self.attack_time >= self.attack_duration:
                 self.is_attacking = False
-                self.attack_frame_count = 0
+                self.attack_time = 0
                 if self.dir != 0:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
@@ -67,20 +72,20 @@ class Character3:
                 self.frame = 0
 
         if not self.is_attacking:
-            self.x += self.dir * 5
+            self.x += self.dir * self.RUN_SPEED_PPS * frame_time
 
         if self.is_jumping:
-            if self.state == self.STATE_JUMP and (10 - self.jump_time) < 0:
+            self.jump_velocity -= self.gravity * frame_time
+            self.y += self.jump_velocity * frame_time
+
+            if self.jump_velocity < 0 and self.state == self.STATE_JUMP:
                 self.state = self.STATE_FALL
                 self.image = self.fall_image
                 self.frame = 0
 
-            if self.jump_time < 20:
-                self.y += (10 - self.jump_time) * 2
-                self.jump_time += 1
-            else:
+            if self.y <= self.ground_y:
                 self.is_jumping = False
-                self.jump_time = 0
+                self.jump_velocity = 0
                 self.y = self.ground_y
                 self.state = self.STATE_IDLE
                 self.image = self.idle_image
@@ -109,9 +114,9 @@ class Character3:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(self.frame * 200, 0, 200, 200, self.x, self.y, 200, 200)
+            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 200, 200)
         else:
-            self.image.clip_composite_draw(self.frame * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
+            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
@@ -121,16 +126,15 @@ class Character3:
                 if not self.is_jumping and not self.is_attacking:
                     self.ground_y = self.y
                     self.is_jumping = True
-                    self.jump_time = 0
-                    self.frame = 0
+                    self.jump_velocity = self.initial_jump_velocity
+                    self.frame = 0.0
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
-                    self.dir = 0
             elif event.key == SDLK_k:  # Attack key
                 if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
-                    self.attack_frame_count = 0
-                    self.frame = 0
+                    self.attack_time = 0
+                    self.frame = 0.0
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
         elif event.type == SDL_KEYUP:
