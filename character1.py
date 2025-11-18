@@ -218,8 +218,8 @@ class Character1:
             self.hit_cooldown = 0.5  # 0.5초 무적 시간
             if self.hp < 0:
                 self.hp = 0
-            pick_order = "1" if self.player_id == 2 else "2"
-            print(f"[{pick_order}] Character1 HP: {self.hp}/{self.max_hp}")  # 디버그용
+            pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
+            print(f"[{pick_order}] Character1 HP: {self.hp}/{self.max_hp}")
 
     def get_attack_damage(self):
         return self.attack_damage
