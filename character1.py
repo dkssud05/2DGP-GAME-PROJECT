@@ -145,6 +145,7 @@ class Character1:
                 elif event.key == SDLK_d:
                     self.keys[SDLK_d] = True
                 elif event.key == SDLK_w and not self.is_jumping:
+                    self.ground_y = self.y
                     self.is_jumping = True
                     self.jump_velocity = self.initial_jump_velocity
                     self.state = self.STATE_JUMP
@@ -168,6 +169,7 @@ class Character1:
                 elif event.key == SDLK_RIGHT:
                     self.keys[SDLK_RIGHT] = True
                 elif event.key == SDLK_UP and not self.is_jumping:
+                    self.ground_y = self.y
                     self.is_jumping = True
                     self.jump_velocity = self.initial_jump_velocity
                     self.state = self.STATE_JUMP
