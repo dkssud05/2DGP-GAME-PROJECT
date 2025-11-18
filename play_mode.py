@@ -40,7 +40,7 @@ def init():
         character1 = Character3()
         character1.x = 200
 
-    character1.player_id = 2
+    character1.player_id = 1
     game_world.add_object(character1, 1)
     characters.append(character1)
 
@@ -57,7 +57,7 @@ def init():
         character2 = Character1()
         character2.x = 600
 
-    character2.player_id = 1
+    character2.player_id = 2
     game_world.add_object(character2, 1)
     characters.append(character2)
 
@@ -73,13 +73,15 @@ def update():
         if char1_attack_bb:
             char2_bb = char2.get_bb()
             if collide(char1_attack_bb, char2_bb):
-                char2.take_damage(10)
+                damage = char1.get_attack_damage()
+                char2.take_damage(damage)
 
         char2_attack_bb = char2.get_attack_bb()
         if char2_attack_bb:
             char1_bb = char1.get_bb()
             if collide(char2_attack_bb, char1_bb):
-                char1.take_damage(10)
+                damage = char2.get_attack_damage()
+                char1.take_damage(damage)
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
