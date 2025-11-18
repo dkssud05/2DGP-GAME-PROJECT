@@ -124,39 +124,76 @@ class Character1:
             self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 300, 300)
         else:
             self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 300, 300)
+
         draw_rectangle(*self.get_bb())
+
+        if self.is_attacking:
+            attack_range = 120
+            attack_height = 100
+
+            attack_offset_x = 20
+            attack_offset_y = 20
+
+            if self.face_dir == 1:
+                left = self.x + attack_offset_x
+                right = left + attack_range
+                bottom = self.y - attack_height // 2 + attack_offset_y
+                top = self.y + attack_height // 2 + attack_offset_y
+            else:
+                right = self.x - attack_offset_x
+                left = right - attack_range
+                bottom = self.y - attack_height // 2 + attack_offset_y
+                top = self.y + attack_height // 2 + attack_offset_y
+
+            draw_rectangle(left, bottom, right, top)
 
     def handle_event(self, event):
         if self.player_id == 1:
-            left_key, right_key = SDLK_LEFT, SDLK_RIGHT
-            jump_key = SDLK_UP
-            attack_key = SDLK_RSHIFT
-        else:
-            left_key, right_key = SDLK_a, SDLK_d
-            jump_key = SDLK_w
-            attack_key = SDLK_LSHIFT
-
-        if event.type == SDL_KEYDOWN:
-            if event.key == left_key or event.key == right_key:
-                self.keys[event.key] = True
-            elif event.key == jump_key:
-                if not self.is_jumping and not self.is_attacking:
-                    self.ground_y = self.y
+            if event.type == SDL_KEYDOWN:
+                if event.key == SDLK_LEFT:
+                    self.keys[SDLK_LEFT] = True
+                elif event.key == SDLK_RIGHT:
+                    self.keys[SDLK_RIGHT] = True
+                elif event.key == SDLK_UP and not self.is_jumping:
                     self.is_jumping = True
                     self.jump_velocity = self.initial_jump_velocity
-                    self.frame = 0.0
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
-            elif event.key == attack_key:
-                if not self.is_attacking and not self.is_jumping:
+                    self.frame = 0
+                elif event.key == SDLK_RCTRL and not self.is_attacking:
                     self.is_attacking = True
-                    self.attack_time = 0
-                    self.frame = 0.0
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
-        elif event.type == SDL_KEYUP:
-            if event.key == left_key or event.key == right_key:
-                self.keys[event.key] = False
+                    self.frame = 0
+                    self.attack_time = 0
+            elif event.type == SDL_KEYUP:
+                if event.key == SDLK_LEFT:
+                    self.keys[SDLK_LEFT] = False
+                elif event.key == SDLK_RIGHT:
+                    self.keys[SDLK_RIGHT] = False
+        else:
+            if event.type == SDL_KEYDOWN:
+                if event.key == SDLK_a:
+                    self.keys[SDLK_a] = True
+                elif event.key == SDLK_d:
+                    self.keys[SDLK_d] = True
+                elif event.key == SDLK_w and not self.is_jumping:
+                    self.is_jumping = True
+                    self.jump_velocity = self.initial_jump_velocity
+                    self.state = self.STATE_JUMP
+                    self.image = self.jump_image
+                    self.frame = 0
+                elif event.key == SDLK_LSHIFT and not self.is_attacking:
+                    self.is_attacking = True
+                    self.state = self.STATE_ATTACK
+                    self.image = self.attack_image
+                    self.frame = 0
+                    self.attack_time = 0
+            elif event.type == SDL_KEYUP:
+                if event.key == SDLK_a:
+                    self.keys[SDLK_a] = False
+                elif event.key == SDLK_d:
+                    self.keys[SDLK_d] = False
 
     def get_bb(self):
         return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
