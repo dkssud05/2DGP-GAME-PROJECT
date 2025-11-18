@@ -118,9 +118,9 @@ class Character2:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 200, 200)
+            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 300, 300)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
+            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 300, 300)
 
     def handle_event(self, event):
         if self.player_id == 1:
