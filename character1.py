@@ -141,7 +141,7 @@ class Character1:
         if self.player_id == 1:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
-            attack_key = SDLK_LSHIFT
+            attack_key = SDLK_LCTRL
         else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
