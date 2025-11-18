@@ -50,6 +50,10 @@ class Character2:
     def update(self):
         frame_time = game_framework.frame_time
 
+        # hit_cooldown 감소
+        if self.hit_cooldown > 0:
+            self.hit_cooldown -= frame_time
+
         if self.state == self.STATE_IDLE:
             self.frame = (self.frame + self.FRAMES_PER_IDLE * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_IDLE
         elif self.state == self.STATE_RUN:
@@ -126,25 +130,10 @@ class Character2:
 
         draw_rectangle(*self.get_bb())
 
-        if self.is_attacking:
-            attack_range = 120
-            attack_height = 100
-
-            attack_offset_x = 20
-            attack_offset_y = 20
-
-            if self.face_dir == 1:
-                left = self.x + attack_offset_x
-                right = left + attack_range
-                bottom = self.y - attack_height // 2 + attack_offset_y
-                top = self.y + attack_height // 2 + attack_offset_y
-            else:
-                right = self.x - attack_offset_x
-                left = right - attack_range
-                bottom = self.y - attack_height // 2 + attack_offset_y
-                top = self.y + attack_height // 2 + attack_offset_y
-
-            draw_rectangle(left, bottom, right, top)
+        # 공격 범위 표시
+        attack_bb = self.get_attack_bb()
+        if attack_bb:
+            draw_rectangle(*attack_bb)
 
     def handle_event(self, event):
         if self.player_id == 1:
@@ -180,3 +169,27 @@ class Character2:
 
     def get_bb(self):
         return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
+
+    def get_attack_bb(self):
+        if not self.is_attacking:
+            return None
+
+        current_frame = int(self.frame)
+        if current_frame not in [1, 2]:
+            return None
+
+        attack_width = 150
+        attack_height = 100
+
+        if self.face_dir == 1:  # 오른쪽 공격
+            left = self.x + 20
+            right = self.x + 20 + attack_width
+            bottom = self.y - attack_height // 2
+            top = self.y + attack_height // 2
+        else:  # 왼쪽 공격
+            left = self.x - 20 - attack_width
+            right = self.x - 20
+            bottom = self.y - attack_height // 2
+            top = self.y + attack_height // 2
+
+        return left, bottom, right, top
