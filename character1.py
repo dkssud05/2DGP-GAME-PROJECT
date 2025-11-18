@@ -210,3 +210,11 @@ class Character1:
             top = self.y + attack_height // 2
 
         return left, bottom, right, top
+
+    def take_damage(self, damage):
+        if self.hit_cooldown <= 0:
+            self.hp -= damage
+            self.hit_cooldown = 0.5  # 0.5초 무적 시간
+            if self.hp < 0:
+                self.hp = 0
+            print(f"[Character1] Player{self.player_id} HP: {self.hp}/{self.max_hp}")  # 디버그용
