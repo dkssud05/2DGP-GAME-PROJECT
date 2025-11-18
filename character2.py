@@ -39,6 +39,8 @@ class Character2:
         self.attack_duration = 0.5
         self.player_id = 1
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False, SDLK_a: False, SDLK_d: False}
+        self.hitbox_width = 80
+        self.hitbox_height = 120
 
         self.max_hp = 200
         self.hp = 200
@@ -121,6 +123,7 @@ class Character2:
             self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 300, 300)
         else:
             self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 300, 300)
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if self.player_id == 1:
@@ -153,3 +156,8 @@ class Character2:
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = False
+
+    def get_bb(self):
+        return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2,
+                self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
+

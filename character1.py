@@ -124,6 +124,7 @@ class Character1:
             self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 300, 300)
         else:
             self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 300, 300)
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if self.player_id == 1:
