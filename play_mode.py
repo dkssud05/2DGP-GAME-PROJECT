@@ -65,6 +65,7 @@ def init():
 def update():
     game_world.update()
 
+    # 공격 충돌 판정
     if len(characters) >= 2:
         char1 = characters[0]
         char2 = characters[1]
@@ -82,6 +83,17 @@ def update():
             if collide(char2_attack_bb, char1_bb):
                 damage = char2.get_attack_damage()
                 char1.take_damage(damage)
+
+        if char1.hp <= 0:
+            print("=" * 50)
+            print("게임 종료! 2번째 선택 캐릭터 승리!")
+            print("=" * 50)
+            game_framework.quit()
+        elif char2.hp <= 0:
+            print("=" * 50)
+            print("게임 종료! 1번째 선택 캐릭터 승리!")
+            print("=" * 50)
+            game_framework.quit()
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
