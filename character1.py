@@ -121,9 +121,9 @@ class Character1:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 300, 300)
+            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 400, 400)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 300, 300)
+            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 400, 400)
 
         draw_rectangle(*self.get_bb())
 

@@ -120,10 +120,31 @@ class Character3:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(int(self.frame) * 126, 0, 126, 126, self.x, self.y, 300, 300)
+            self.image.clip_draw(int(self.frame) * 126, 0, 126, 126, self.x, self.y, 400, 400)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 126, 0, 126, 126, 0, 'h', self.x, self.y, 300, 300)
+            self.image.clip_composite_draw(int(self.frame) * 126, 0, 126, 126, 0, 'h', self.x, self.y, 400, 400)
+
         draw_rectangle(*self.get_bb())
+
+        if self.is_attacking:
+            attack_range = 120
+            attack_height = 100
+
+            attack_offset_x = 20
+            attack_offset_y = 20
+
+            if self.face_dir == 1:
+                left = self.x + attack_offset_x
+                right = left + attack_range
+                bottom = self.y - attack_height // 2 + attack_offset_y
+                top = self.y + attack_height // 2 + attack_offset_y
+            else:
+                right = self.x - attack_offset_x
+                left = right - attack_range
+                bottom = self.y - attack_height // 2 + attack_offset_y
+                top = self.y + attack_height // 2 + attack_offset_y
+
+            draw_rectangle(left, bottom, right, top)
 
     def handle_event(self, event):
         if self.player_id == 1:
