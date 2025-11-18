@@ -139,53 +139,35 @@ class Character1:
 
     def handle_event(self, event):
         if self.player_id == 1:
-            if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_a:
-                    self.keys[SDLK_a] = True
-                elif event.key == SDLK_d:
-                    self.keys[SDLK_d] = True
-                elif event.key == SDLK_w and not self.is_jumping:
-                    self.ground_y = self.y
-                    self.is_jumping = True
-                    self.jump_velocity = self.initial_jump_velocity
-                    self.state = self.STATE_JUMP
-                    self.image = self.jump_image
-                    self.frame = 0
-                elif event.key == SDLK_LSHIFT and not self.is_attacking:
-                    self.is_attacking = True
-                    self.state = self.STATE_ATTACK
-                    self.image = self.attack_image
-                    self.frame = 0
-                    self.attack_time = 0
-            elif event.type == SDL_KEYUP:
-                if event.key == SDLK_a:
-                    self.keys[SDLK_a] = False
-                elif event.key == SDLK_d:
-                    self.keys[SDLK_d] = False
+            left_key, right_key = SDLK_a, SDLK_d
+            jump_key = SDLK_w
+            attack_key = SDLK_LSHIFT
         else:
-            if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_LEFT:
-                    self.keys[SDLK_LEFT] = True
-                elif event.key == SDLK_RIGHT:
-                    self.keys[SDLK_RIGHT] = True
-                elif event.key == SDLK_UP and not self.is_jumping:
+            left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+            jump_key = SDLK_UP
+            attack_key = SDLK_RCTRL
+
+        if event.type == SDL_KEYDOWN:
+            if event.key == left_key or event.key == right_key:
+                self.keys[event.key] = True
+            elif event.key == jump_key:
+                if not self.is_jumping and not self.is_attacking:
                     self.ground_y = self.y
                     self.is_jumping = True
                     self.jump_velocity = self.initial_jump_velocity
+                    self.frame = 0.0
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
-                    self.frame = 0
-                elif event.key == SDLK_RCTRL and not self.is_attacking:
+            elif event.key == attack_key:
+                if not self.is_attacking and not self.is_jumping:
                     self.is_attacking = True
+                    self.attack_time = 0
+                    self.frame = 0.0
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
-                    self.frame = 0
-                    self.attack_time = 0
-            elif event.type == SDL_KEYUP:
-                if event.key == SDLK_LEFT:
-                    self.keys[SDLK_LEFT] = False
-                elif event.key == SDLK_RIGHT:
-                    self.keys[SDLK_RIGHT] = False
+        elif event.type == SDL_KEYUP:
+            if event.key == left_key or event.key == right_key:
+                self.keys[event.key] = False
 
     def get_bb(self):
         return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
