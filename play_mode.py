@@ -65,6 +65,33 @@ def init():
 def update():
     game_world.update()
 
+    if len(characters) >= 2:
+        char1 = characters[0]
+        char2 = characters[1]
+
+        char1_attack_bb = char1.get_attack_bb()
+        if char1_attack_bb:
+            char2_bb = char2.get_bb()
+            if collide(char1_attack_bb, char2_bb):
+                char2.take_damage(10)
+
+        char2_attack_bb = char2.get_attack_bb()
+        if char2_attack_bb:
+            char1_bb = char1.get_bb()
+            if collide(char2_attack_bb, char1_bb):
+                char1.take_damage(10)
+
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a
+    left_b, bottom_b, right_b, top_b = b
+
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+
+    return True
+
 def draw():
     clear_canvas()
     game_world.render()
