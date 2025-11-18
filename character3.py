@@ -46,6 +46,7 @@ class Character3:
         self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
+        self.attack_damage = 18
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -201,3 +202,6 @@ class Character3:
             if self.hp < 0:
                 self.hp = 0
             print(f"[Character3] Player{self.player_id} HP: {self.hp}/{self.max_hp}")  # 디버그용
+
+    def get_attack_damage(self):
+        return self.attack_damage
