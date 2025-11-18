@@ -98,9 +98,9 @@ class Character2:
                 self.frame = 0
         elif not self.is_attacking:
             if self.player_id == 1:
-                left_key, right_key = SDLK_LEFT, SDLK_RIGHT
-            else:
                 left_key, right_key = SDLK_a, SDLK_d
+            else:
+                left_key, right_key = SDLK_LEFT, SDLK_RIGHT
 
             if self.keys[left_key] and not self.keys[right_key]:
                 self.dir = -1
@@ -138,13 +138,13 @@ class Character2:
 
     def handle_event(self, event):
         if self.player_id == 1:
-            left_key, right_key = SDLK_LEFT, SDLK_RIGHT
-            jump_key = SDLK_UP
-            attack_key = SDLK_RSHIFT
-        else:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
             attack_key = SDLK_LSHIFT
+        else:
+            left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+            jump_key = SDLK_UP
+            attack_key = SDLK_RCTRL
 
         if event.type == SDL_KEYDOWN:
             if event.key == left_key or event.key == right_key:
@@ -201,7 +201,8 @@ class Character2:
             self.hit_cooldown = 0.5  # 0.5초 무적 시간
             if self.hp < 0:
                 self.hp = 0
-            print(f"[Character2] Player{self.player_id} HP: {self.hp}/{self.max_hp}")  # 디버그용
+            pick_order = "1" if self.player_id == 2 else "2"
+            print(f"[{pick_order}] Character2 HP: {self.hp}/{self.max_hp}")  # 디버그용
 
     def get_attack_damage(self):
         return self.attack_damage

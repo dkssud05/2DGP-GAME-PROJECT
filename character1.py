@@ -99,9 +99,9 @@ class Character1:
                 self.frame = 0
         elif not self.is_attacking:
             if self.player_id == 1:
-                left_key, right_key = SDLK_LEFT, SDLK_RIGHT
-            else:
                 left_key, right_key = SDLK_a, SDLK_d
+            else:
+                left_key, right_key = SDLK_LEFT, SDLK_RIGHT
 
             if self.keys[left_key] and not self.keys[right_key]:
                 self.dir = -1
@@ -140,29 +140,6 @@ class Character1:
     def handle_event(self, event):
         if self.player_id == 1:
             if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_LEFT:
-                    self.keys[SDLK_LEFT] = True
-                elif event.key == SDLK_RIGHT:
-                    self.keys[SDLK_RIGHT] = True
-                elif event.key == SDLK_UP and not self.is_jumping:
-                    self.is_jumping = True
-                    self.jump_velocity = self.initial_jump_velocity
-                    self.state = self.STATE_JUMP
-                    self.image = self.jump_image
-                    self.frame = 0
-                elif event.key == SDLK_RCTRL and not self.is_attacking:
-                    self.is_attacking = True
-                    self.state = self.STATE_ATTACK
-                    self.image = self.attack_image
-                    self.frame = 0
-                    self.attack_time = 0
-            elif event.type == SDL_KEYUP:
-                if event.key == SDLK_LEFT:
-                    self.keys[SDLK_LEFT] = False
-                elif event.key == SDLK_RIGHT:
-                    self.keys[SDLK_RIGHT] = False
-        else:
-            if event.type == SDL_KEYDOWN:
                 if event.key == SDLK_a:
                     self.keys[SDLK_a] = True
                 elif event.key == SDLK_d:
@@ -184,6 +161,29 @@ class Character1:
                     self.keys[SDLK_a] = False
                 elif event.key == SDLK_d:
                     self.keys[SDLK_d] = False
+        else:
+            if event.type == SDL_KEYDOWN:
+                if event.key == SDLK_LEFT:
+                    self.keys[SDLK_LEFT] = True
+                elif event.key == SDLK_RIGHT:
+                    self.keys[SDLK_RIGHT] = True
+                elif event.key == SDLK_UP and not self.is_jumping:
+                    self.is_jumping = True
+                    self.jump_velocity = self.initial_jump_velocity
+                    self.state = self.STATE_JUMP
+                    self.image = self.jump_image
+                    self.frame = 0
+                elif event.key == SDLK_RCTRL and not self.is_attacking:
+                    self.is_attacking = True
+                    self.state = self.STATE_ATTACK
+                    self.image = self.attack_image
+                    self.frame = 0
+                    self.attack_time = 0
+            elif event.type == SDL_KEYUP:
+                if event.key == SDLK_LEFT:
+                    self.keys[SDLK_LEFT] = False
+                elif event.key == SDLK_RIGHT:
+                    self.keys[SDLK_RIGHT] = False
 
     def get_bb(self):
         return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
@@ -218,7 +218,8 @@ class Character1:
             self.hit_cooldown = 0.5  # 0.5초 무적 시간
             if self.hp < 0:
                 self.hp = 0
-            print(f"[Character1] Player{self.player_id} HP: {self.hp}/{self.max_hp}")  # 디버그용
+            pick_order = "1" if self.player_id == 2 else "2"
+            print(f"[{pick_order}] Character1 HP: {self.hp}/{self.max_hp}")  # 디버그용
 
     def get_attack_damage(self):
         return self.attack_damage
