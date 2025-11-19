@@ -126,9 +126,9 @@ class Character1:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 200, 200)
+            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 400, 400)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
+            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 400, 400)
 
         draw_rectangle(*self.get_bb())
 
@@ -141,7 +141,7 @@ class Character1:
         if self.player_id == 1:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
-            attack_key = SDLK_LSHIFT
+            attack_key = SDLK_LCTRL
         else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
