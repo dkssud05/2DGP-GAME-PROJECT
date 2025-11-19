@@ -170,7 +170,7 @@ class Character1:
                 self.keys[event.key] = False
 
     def get_bb(self):
-        return (self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2)
+        return self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2
 
     def get_attack_bb(self):
         if not self.is_attacking:
