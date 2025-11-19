@@ -47,7 +47,7 @@ class Character1:
         self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
-        self.attack_damage = 15  # Character1의 공격 데미지
+        self.attack_damage = 15
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -99,9 +99,9 @@ class Character1:
                 self.frame = 0
         elif not self.is_attacking:
             if self.player_id == 1:
-                left_key, right_key = SDLK_a, SDLK_d
-            else:
                 left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+            else:
+                left_key, right_key = SDLK_a, SDLK_d
 
             if self.keys[left_key] and not self.keys[right_key]:
                 self.dir = -1
@@ -126,9 +126,9 @@ class Character1:
 
     def draw(self):
         if self.face_dir == 1:
-            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 400, 400)
+            self.image.clip_draw(int(self.frame) * 200, 0, 200, 200, self.x, self.y, 200, 200)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 400, 400)
+            self.image.clip_composite_draw(int(self.frame) * 200, 0, 200, 200, 0, 'h', self.x, self.y, 200, 200)
 
         draw_rectangle(*self.get_bb())
 
@@ -139,13 +139,13 @@ class Character1:
 
     def handle_event(self, event):
         if self.player_id == 1:
-            left_key, right_key = SDLK_a, SDLK_d
-            jump_key = SDLK_w
-            attack_key = SDLK_LCTRL
-        else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
-            attack_key = SDLK_RCTRL
+            attack_key = SDLK_RSHIFT
+        else:
+            left_key, right_key = SDLK_a, SDLK_d
+            jump_key = SDLK_w
+            attack_key = SDLK_LSHIFT
 
         if event.type == SDL_KEYDOWN:
             if event.key == left_key or event.key == right_key:
@@ -180,7 +180,7 @@ class Character1:
         if current_frame not in [2, 3, 4]:
             return None
 
-        attack_width = 150
+        attack_width = 140
         attack_height = 100
 
         if self.face_dir == 1:  # 오른쪽 공격
