@@ -48,7 +48,7 @@ class Character3:
         self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
-        self.attack_damage = 18
+        self.attack_damage = 20
 
         self.is_dead = False
         self.death_time = 0
