@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 
 class Character1:
-    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK = 0, 1, 2, 3, 4
+    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH = 0, 1, 2, 3, 4, 5
 
     PIXEL_PER_METER = (10.0 / 0.3)
     RUN_SPEED_KMPH = 15.0
@@ -16,6 +16,7 @@ class Character1:
     FRAMES_PER_RUN = 8
     FRAMES_PER_JUMP = 2
     FRAMES_PER_ATTACK = 6
+    FRAMES_PER_DEATH = 6
 
     def __init__(self):
         self.x, self.y = 400, 100
@@ -28,6 +29,7 @@ class Character1:
         self.jump_image = load_image('character1.motion/char1_Jump.png')
         self.fall_image = load_image('character1.motion/char1_Fall.png')
         self.attack_image = load_image('character1.motion/char1_Attack1.png')
+        self.death_image = load_image('character1.motion/char1_Death.png')
         self.image = self.idle_image
         self.is_jumping = False
         self.jump_velocity = 0
@@ -49,8 +51,20 @@ class Character1:
         self.hit_cooldown = 0
         self.attack_damage = 15
 
+        self.is_dead = False
+        self.death_time = 0
+
     def update(self):
         frame_time = game_framework.frame_time
+
+        # 죽음 상태 처리
+        if self.state == self.STATE_DEATH:
+            if self.frame < self.FRAMES_PER_DEATH - 1:
+                self.frame += self.FRAMES_PER_DEATH * self.ACTION_PER_TIME * frame_time
+            else:
+                self.frame = self.FRAMES_PER_DEATH - 1  # 마지막 프레임 유지
+            self.death_time += frame_time
+            return
 
         # hit_cooldown 감소
         if self.hit_cooldown > 0:
@@ -202,11 +216,16 @@ class Character1:
         return left, bottom, right, top
 
     def take_damage(self, damage):
-        if self.hit_cooldown <= 0:
+        if self.hit_cooldown <= 0 and not self.is_dead:
             self.hp -= damage
             self.hit_cooldown = 0.5  # 0.5초 무적 시간
-            if self.hp < 0:
+            if self.hp <= 0:
                 self.hp = 0
+                self.is_dead = True
+                self.state = self.STATE_DEATH
+                self.image = self.death_image
+                self.frame = 0
+                self.death_time = 0
             pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
             print(f"[{pick_order}] Character1 HP: {self.hp}/{self.max_hp}")
 
