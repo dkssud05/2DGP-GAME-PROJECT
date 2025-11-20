@@ -8,6 +8,9 @@ from character2 import Character2
 from character3 import Character3
 
 characters = []
+game_over = False
+game_over_time = 0
+winner = None
 
 def handle_events():
     events = get_events()
@@ -63,6 +66,8 @@ def init():
 
 
 def update():
+    global game_over, game_over_time, winner
+
     game_world.update()
 
     # 공격 충돌 판정
@@ -70,30 +75,46 @@ def update():
         char1 = characters[0]
         char2 = characters[1]
 
-        char1_attack_bb = char1.get_attack_bb()
-        if char1_attack_bb:
-            char2_bb = char2.get_bb()
-            if collide(char1_attack_bb, char2_bb):
-                damage = char1.get_attack_damage()
-                char2.take_damage(damage)
+        # 게임 종료 상태가 아닐 때만 공격 판정
+        if not game_over:
+            char1_attack_bb = char1.get_attack_bb()
+            if char1_attack_bb:
+                char2_bb = char2.get_bb()
+                if collide(char1_attack_bb, char2_bb):
+                    damage = char1.get_attack_damage()
+                    char2.take_damage(damage)
 
-        char2_attack_bb = char2.get_attack_bb()
-        if char2_attack_bb:
-            char1_bb = char1.get_bb()
-            if collide(char2_attack_bb, char1_bb):
-                damage = char2.get_attack_damage()
-                char1.take_damage(damage)
+            char2_attack_bb = char2.get_attack_bb()
+            if char2_attack_bb:
+                char1_bb = char1.get_bb()
+                if collide(char2_attack_bb, char1_bb):
+                    damage = char2.get_attack_damage()
+                    char1.take_damage(damage)
 
-        if char1.hp <= 0:
+        # 죽음 체크 및 게임 종료 처리
+        if char1.is_dead and not game_over:
+            game_over = True
+            game_over_time = 0
+            winner = "2번째 선택 캐릭터"
             print("=" * 50)
-            print("게임 종료! 2번째 선택 캐릭터 승리!")
+            print(f"{winner} 승리!")
+            print("3초 후 게임이 종료됩니다...")
             print("=" * 50)
-            game_framework.quit()
-        elif char2.hp <= 0:
+        elif char2.is_dead and not game_over:
+            game_over = True
+            game_over_time = 0
+            winner = "1번째 선택 캐릭터"
             print("=" * 50)
-            print("게임 종료! 1번째 선택 캐릭터 승리!")
+            print(f"{winner} 승리!")
+            print("3초 후 게임이 종료됩니다...")
             print("=" * 50)
-            game_framework.quit()
+
+        # 게임 종료 타이머
+        if game_over:
+            game_over_time += game_framework.frame_time
+            if game_over_time >= 3.0:
+                print("게임 종료!")
+                game_framework.quit()
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
