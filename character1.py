@@ -81,6 +81,11 @@ class Character1:
         if not self.is_attacking:
             self.x += self.dir * self.RUN_SPEED_PPS * frame_time
 
+            if self.x < 40:
+                self.x = 40
+            elif self.x > 760:
+                self.x = 760
+
         if self.is_jumping:
             self.jump_velocity -= self.gravity * frame_time
             self.y += self.jump_velocity * frame_time
