@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 import game_world
 import character_select_mode
+from ui import UI
 from background import Background
 from character1 import Character1
 from character2 import Character2
@@ -24,7 +25,7 @@ def handle_events():
                 char.handle_event(event)
 
 def init():
-    global characters
+    global characters, ui1, ui2
 
     game_world.world = [[], []]
 
@@ -63,6 +64,10 @@ def init():
     character2.player_id = 2
     game_world.add_object(character2, 1)
     characters.append(character2)
+
+    ui1 = UI(max_hp = 200)
+    ui2 = UI(max_hp = 200)
+    ui2.x = 450
 
 
 def update():
@@ -116,6 +121,10 @@ def update():
                 print("게임 종료!")
                 game_framework.quit()
 
+        if len(characters) == 2:
+            ui1.update(characters[0].hp)
+            ui2.update(characters[1].hp)
+
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
     left_b, bottom_b, right_b, top_b = b
@@ -130,6 +139,8 @@ def collide(a, b):
 def draw():
     clear_canvas()
     game_world.render()
+    ui1.draw()
+    ui2.draw()
     update_canvas()
 
 def finish():
