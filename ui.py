@@ -20,6 +20,9 @@ class UI:
         self.current_hp = max(0, min(hp, self.max_hp))
         self.elapsed_time = time.time() - self.start_time
 
+    def is_time_over(self):
+        return self.elapsed_time >= self.max_time
+
     def draw(self):
         draw_rectangle(self.x-1, self.y-1, self.x + self.width+1, self.y + self.height+1, 0, 0, 0, filled=False)
 

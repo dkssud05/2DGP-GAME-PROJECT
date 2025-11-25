@@ -125,6 +125,23 @@ def update():
             ui1.update(characters[0].hp)
             ui2.update(characters[1].hp)
 
+        # 타이머 종료 체크
+        if ui1.is_time_over() and not game_over:
+            game_over = True
+            game_over_time = 0
+            # HP가 더 많은 쪽이 승리
+            if char1.hp > char2.hp:
+                winner = "1번째 선택 캐릭터"
+            elif char2.hp > char1.hp:
+                winner = "2번째 선택 캐릭터"
+            else:
+                winner = "무승부"
+            print("=" * 50)
+            print("시간 종료!")
+            print(f"{winner} 승리!")
+            print("3초 후 게임이 종료됩니다...")
+            print("=" * 50)
+
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
     left_b, bottom_b, right_b, top_b = b
