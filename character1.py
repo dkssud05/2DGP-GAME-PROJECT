@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 
 class Character1:
-    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH = 0, 1, 2, 3, 4, 5
+    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT = 0, 1, 2, 3, 4, 5, 6
 
     PIXEL_PER_METER = (10.0 / 0.3)
     RUN_SPEED_KMPH = 15.0
@@ -17,6 +17,7 @@ class Character1:
     FRAMES_PER_JUMP = 2
     FRAMES_PER_ATTACK = 6
     FRAMES_PER_DEATH = 6
+    FRAMES_PER_HIT = 4
 
     def __init__(self):
         self.x, self.y = 400, 100
@@ -30,6 +31,7 @@ class Character1:
         self.fall_image = load_image('character1.motion/char1_Fall.png')
         self.attack_image = load_image('character1.motion/char1_Attack1.png')
         self.death_image = load_image('character1.motion/char1_Death.png')
+        self.hit_image = load_image('character1.motion/char1_TakeHit.png')
         self.image = self.idle_image
         self.is_jumping = False
         self.jump_velocity = 0
@@ -53,6 +55,8 @@ class Character1:
 
         self.is_dead = False
         self.death_time = 0
+        self.hit_time = 0
+        self.hit_duration = 0.3
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -64,6 +68,17 @@ class Character1:
             else:
                 self.frame = self.FRAMES_PER_DEATH - 1  # 마지막 프레임 유지
             self.death_time += frame_time
+            return
+
+        if self.state == self.STATE_HIT:
+            self.frame = (self.frame + self.FRAMES_PER_HIT * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_HIT
+            self.hit_time += frame_time
+            if self.hit_time >= self.hit_duration:
+                self.is_hit = False
+                self.hit_time = 0
+                self.state = self.STATE_IDLE
+                self.image = self.idle_image
+                self.frame = 0
             return
 
         # hit_cooldown 감소
@@ -170,7 +185,7 @@ class Character1:
             if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = True
             elif event.key == jump_key:
-                if not self.is_jumping and not self.is_attacking:
+                if not self.is_jumping and not self.is_attacking and not self.is_hit:
                     self.ground_y = self.y
                     self.is_jumping = True
                     self.jump_velocity = self.initial_jump_velocity
@@ -228,6 +243,12 @@ class Character1:
                 self.death_time = 0
             pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
             print(f"[{pick_order}] Character1 HP: {self.hp}/{self.max_hp}")
+        else:
+            self.is_hit = True
+            self.hit_time = 0
+            self.state = self.STATE_HIT
+            self.image = self.hit_image
+            self.frame = 0
 
     def get_attack_damage(self):
         return self.attack_damage
