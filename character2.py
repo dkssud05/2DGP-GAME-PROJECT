@@ -17,6 +17,7 @@ class Character2:
     FRAMES_PER_JUMP = 2
     FRAMES_PER_ATTACK = 4
     FRAMES_PER_DEATH = 7
+    FRAMES_PER_HIT = 3
 
     def __init__(self):
         self.x, self.y = 600, 100
@@ -38,6 +39,7 @@ class Character2:
         self.initial_jump_velocity = 400
         self.ground_y = 300
         self.is_attacking = False
+        self.attack_frame_count = 0
         self.attack_time = 0
         self.attack_duration = 0.5
         self.player_id = 1
@@ -56,9 +58,11 @@ class Character2:
         self.hit_time = 0
         self.hit_duration = 0.3
 
+        self.attack_id = 0  # 각 공격마다 고유 ID
+        self.last_hit_by_attack_id = -1  # 마지막으로 맞은 공격 ID
+
     def update(self):
         frame_time = game_framework.frame_time
-
 
         # 죽음 상태 처리
         if self.state == self.STATE_DEATH:
@@ -67,6 +71,17 @@ class Character2:
             else:
                 self.frame = self.FRAMES_PER_DEATH - 1  # 마지막 프레임 유지
             self.death_time += frame_time
+            return
+
+        if self.state == self.STATE_HIT:
+            self.frame = (self.frame + self.FRAMES_PER_HIT * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_HIT
+            self.hit_time += frame_time
+            if self.hit_time >= self.hit_duration:
+                self.is_hit = False
+                self.hit_time = 0
+                self.state = self.STATE_IDLE
+                self.image = self.idle_image
+                self.frame = 0
             return
 
         # hit_cooldown 감소
@@ -181,7 +196,7 @@ class Character2:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                if not self.is_attacking and not self.is_jumping:
+                if not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -222,6 +237,7 @@ class Character2:
         if self.hit_cooldown <= 0 and not self.is_dead:
             self.hp -= damage
             self.hit_cooldown = 0.5  # 0.5초 무적 시간
+
             if self.hp <= 0:
                 self.hp = 0
                 self.is_dead = True
@@ -229,15 +245,15 @@ class Character2:
                 self.image = self.death_image
                 self.frame = 0
                 self.death_time = 0
+            else:
+                self.is_hit = True
+                self.hit_time = 0
+                self.state = self.STATE_HIT
+                self.image = self.hit_image
+                self.frame = 0
+
             pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
             print(f"[{pick_order}] Character2 HP: {self.hp}/{self.max_hp}")
-        else:
-            self.is_hit = True
-            self.hit_time = 0
-            self.state = self.STATE_HIT
-            self.image = self.hit_image
-            self.frame = 0
-
 
     def get_attack_damage(self):
         return self.attack_damage
