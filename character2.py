@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 
 class Character2:
-    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH = 0, 1, 2, 3, 4, 5
+    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT = 0, 1, 2, 3, 4, 5, 6
 
     PIXEL_PER_METER = (10.0 / 0.3)
     RUN_SPEED_KMPH = 15.0
@@ -30,6 +30,7 @@ class Character2:
         self.fall_image = load_image('character2.motion/char2_Fall.png')
         self.attack_image = load_image('character2.motion/char2_Attack1.png')
         self.death_image = load_image('character2.motion/char2_Death.png')
+        self.hit_image = load_image('character2.motion/char2_Take_Hit.png')
         self.image = self.idle_image
         self.is_jumping = False
         self.jump_velocity = 0
@@ -52,6 +53,8 @@ class Character2:
 
         self.is_dead = False
         self.death_time = 0
+        self.hit_time = 0
+        self.hit_duration = 0.3
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -228,6 +231,13 @@ class Character2:
                 self.death_time = 0
             pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
             print(f"[{pick_order}] Character2 HP: {self.hp}/{self.max_hp}")
+        else:
+            self.is_hit = True
+            self.hit_time = 0
+            self.state = self.STATE_HIT
+            self.image = self.hit_image
+            self.frame = 0
+
 
     def get_attack_damage(self):
         return self.attack_damage
