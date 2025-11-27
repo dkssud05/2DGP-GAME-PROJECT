@@ -44,6 +44,7 @@ class Character2:
         self.attack_duration = 0.5
         self.player_id = 1
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False, SDLK_a: False, SDLK_d: False}
+        self.attack_key_pressed = False
         self.hitbox_width = 80
         self.hitbox_height = 120
 
@@ -196,15 +197,18 @@ class Character2:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                if not self.is_attacking and not self.is_jumping and not self.is_hit:
+                 if not self.attack_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
                     self.state = self.STATE_ATTACK
                     self.image = self.attack_image
+                    self.attack_key_pressed = True
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = False
+            elif event.key == attack_key:
+                self.attack_key_pressed = False
 
     def get_bb(self):
         return self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2
