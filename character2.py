@@ -30,6 +30,7 @@ class Character2:
         self.jump_image = load_image('character2.motion/char2_Jump.png')
         self.fall_image = load_image('character2.motion/char2_Fall.png')
         self.attack_image = load_image('character2.motion/char2_Attack1.png')
+        self.attack2_image = load_image('character2.motion/char2_Attack2.png')
         self.death_image = load_image('character2.motion/char2_Death.png')
         self.hit_image = load_image('character2.motion/char2_Take_Hit.png')
         self.image = self.idle_image
@@ -42,9 +43,11 @@ class Character2:
         self.attack_frame_count = 0
         self.attack_time = 0
         self.attack_duration = 0.5
+        self.current_attack_type = 1  # 1: Attack1, 2: Attack2
         self.player_id = 1
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False, SDLK_a: False, SDLK_d: False}
         self.attack_key_pressed = False
+        self.attack2_key_pressed = False
         self.hitbox_width = 80
         self.hitbox_height = 120
 
@@ -103,7 +106,8 @@ class Character2:
             if self.attack_time >= self.attack_duration:
                 self.is_attacking = False
                 self.attack_time = 0
-                self.attack_key_pressed = False  # 공격 종료 시 키 상태 초기화
+                self.attack_key_pressed = False
+                self.attack2_key_pressed = False
                 if self.dir != 0:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
@@ -181,10 +185,12 @@ class Character2:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
             attack_key = SDLK_LCTRL
+            attack2_key = SDLK_LSHIFT
         else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
             attack_key = SDLK_RCTRL
+            attack2_key = SDLK_RSHIFT
 
         if event.type == SDL_KEYDOWN:
             if event.key == left_key or event.key == right_key:
@@ -198,19 +204,30 @@ class Character2:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                # 공격 중이 아니고, 점프 중이 아니고, 피격 중이 아닐 때만 공격 가능
-                if not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
                     self.state = self.STATE_ATTACK
+                    self.current_attack_type = 1
                     self.image = self.attack_image
                     self.attack_key_pressed = True
+            elif event.key == attack2_key:
+                if not self.attack2_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                    self.is_attacking = True
+                    self.attack_time = 0
+                    self.frame = 0.0
+                    self.state = self.STATE_ATTACK
+                    self.current_attack_type = 2
+                    self.image = self.attack2_image
+                    self.attack2_key_pressed = True
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = False
             elif event.key == attack_key:
                 self.attack_key_pressed = False
+            elif event.key == attack2_key:
+                self.attack2_key_pressed = False
 
     def get_bb(self):
         return self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2
