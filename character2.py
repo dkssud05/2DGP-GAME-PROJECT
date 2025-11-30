@@ -57,7 +57,7 @@ class Character2:
         self.is_dead = False
         self.death_time = 0
         self.hit_time = 0
-        self.hit_duration = 0.3
+        self.hit_duration = 0.5
 
         self.attack_id = 0  # 각 공격마다 고유 ID
         self.last_hit_by_attack_id = -1  # 마지막으로 맞은 공격 ID

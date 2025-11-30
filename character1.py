@@ -57,7 +57,7 @@ class Character1:
         self.is_dead = False
         self.death_time = 0
         self.hit_time = 0
-        self.hit_duration = 0.3
+        self.hit_duration = 0.5
 
     def update(self):
         frame_time = game_framework.frame_time
