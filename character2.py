@@ -103,6 +103,7 @@ class Character2:
             if self.attack_time >= self.attack_duration:
                 self.is_attacking = False
                 self.attack_time = 0
+                self.attack_key_pressed = False  # 공격 종료 시 키 상태 초기화
                 if self.dir != 0:
                     self.state = self.STATE_RUN
                     self.image = self.run_image
@@ -197,7 +198,8 @@ class Character2:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                 if not self.attack_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                # 공격 중이 아니고, 점프 중이 아니고, 피격 중이 아닐 때만 공격 가능
+                if not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -238,26 +240,29 @@ class Character2:
         return left, bottom, right, top
 
     def take_damage(self, damage):
-        if self.hit_cooldown <= 0 and not self.is_dead:
-            self.hp -= damage
-            self.hit_cooldown = 0.5  # 0.5초 무적 시간
+        # 피격 중이거나 무적 시간 중이거나 죽은 상태면 데미지를 받지 않음
+        if self.is_hit or self.hit_cooldown > 0 or self.is_dead:
+            return
 
-            if self.hp <= 0:
-                self.hp = 0
-                self.is_dead = True
-                self.state = self.STATE_DEATH
-                self.image = self.death_image
-                self.frame = 0
-                self.death_time = 0
-            else:
-                self.is_hit = True
-                self.hit_time = 0
-                self.state = self.STATE_HIT
-                self.image = self.hit_image
-                self.frame = 0
+        self.hp -= damage
+        self.hit_cooldown = 0.5  # 0.5초 무적 시간
 
-            pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
-            print(f"[{pick_order}] Character2 HP: {self.hp}/{self.max_hp}")
+        if self.hp <= 0:
+            self.hp = 0
+            self.is_dead = True
+            self.state = self.STATE_DEATH
+            self.image = self.death_image
+            self.frame = 0
+            self.death_time = 0
+        else:
+            self.is_hit = True
+            self.hit_time = 0
+            self.state = self.STATE_HIT
+            self.image = self.hit_image
+            self.frame = 0
+
+        pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
+        print(f"[{pick_order}] Character2 HP: {self.hp}/{self.max_hp}")
 
     def get_attack_damage(self):
         return self.attack_damage
