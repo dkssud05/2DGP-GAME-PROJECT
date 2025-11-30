@@ -73,12 +73,25 @@ def init():
 def update():
     global game_over, game_over_time, winner
 
+    if len(characters) >= 2:
+        char1 = characters[0]
+        char2 = characters[1]
+
+        char1_prev_x = char1.x
+        char2_prev_x = char2.x
+
     game_world.update()
 
     # 공격 충돌 판정
     if len(characters) >= 2:
         char1 = characters[0]
         char2 = characters[1]
+
+        char1_bb = char1.get_bb()
+        char2_bb = char2.get_bb()
+        if collide(char1_bb, char2_bb):
+            char1.x = char1_prev_x
+            char2.x = char2_prev_x
 
         # 게임 종료 상태가 아닐 때만 공격 판정
         if not game_over:
