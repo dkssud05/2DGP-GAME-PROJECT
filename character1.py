@@ -30,6 +30,7 @@ class Character1:
         self.jump_image = load_image('character1.motion/char1_Jump.png')
         self.fall_image = load_image('character1.motion/char1_Fall.png')
         self.attack_image = load_image('character1.motion/char1_Attack1.png')
+        self.attack2_image = load_image('character1.motion/char1_Attack2.png')
         self.death_image = load_image('character1.motion/char1_Death.png')
         self.hit_image = load_image('character1.motion/char1_TakeHit.png')
         self.image = self.idle_image
@@ -42,9 +43,11 @@ class Character1:
         self.attack_frame_count = 0
         self.attack_time = 0
         self.attack_duration = 0.5
+        self.current_attack_type = 1  # 1: Attack1, 2: Attack2
         self.player_id = 1
         self.keys = {SDLK_LEFT: False, SDLK_RIGHT: False, SDLK_a: False, SDLK_d: False}
         self.attack_key_pressed = False
+        self.attack2_key_pressed = False
         self.hitbox_width = 80
         self.hitbox_height = 120
 
