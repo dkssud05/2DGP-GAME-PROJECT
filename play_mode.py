@@ -82,7 +82,6 @@ def update():
 
     game_world.update()
 
-    # 공격 충돌 판정
     if len(characters) >= 2:
         char1 = characters[0]
         char2 = characters[1]
@@ -93,7 +92,6 @@ def update():
             char1.x = char1_prev_x
             char2.x = char2_prev_x
 
-        # 게임 종료 상태가 아닐 때만 공격 판정
         if not game_over:
             char1_attack_bb = char1.get_attack_bb()
             if char1_attack_bb:
@@ -109,7 +107,6 @@ def update():
                     damage = char2.get_attack_damage()
                     char1.take_damage(damage)
 
-        # 죽음 체크 및 게임 종료 처리
         if char1.is_dead and not game_over:
             game_over = True
             game_over_time = 0
@@ -127,7 +124,6 @@ def update():
             print("3초 후 게임이 종료됩니다...")
             print("=" * 50)
 
-        # 게임 종료 타이머
         if game_over:
             game_over_time += game_framework.frame_time
             if game_over_time >= 3.0:
@@ -138,11 +134,9 @@ def update():
             ui1.update(characters[0].hp)
             ui2.update(characters[1].hp)
 
-        # 타이머 종료 체크
         if ui1.is_time_over() and not game_over:
             game_over = True
             game_over_time = 0
-            # HP가 더 많은 쪽이 승리
             if char1.hp > char2.hp:
                 winner = "1번째 선택 캐릭터"
             elif char2.hp > char1.hp:
