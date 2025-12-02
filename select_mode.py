@@ -1,5 +1,6 @@
 from pico2d import *
 import game_framework
+import character_select
 
 MENU_VS_MODE = 0
 MENU_AI_MODE = 1
@@ -48,6 +49,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.quit()
+            elif event.key == SDLK_RETURN:
+                game_framework.change_mode(character_select)
 
 def pause():
     pass

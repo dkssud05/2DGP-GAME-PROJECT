@@ -18,7 +18,7 @@ def update():
     global running
     if get_time() - start_time > 3.0:
         import select_mode
-        game_framework.change_mode(menu_mode)
+        game_framework.change_mode(select_mode)
 
 def draw():
     clear_canvas()
