@@ -92,7 +92,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
-                game_framework.quit()
+                import select_mode
+                game_framework.change_mode(menu_mode)
             elif event.key == SDLK_LEFT:
                 highlighted = max(1, highlighted - 1)
             elif event.key == SDLK_RIGHT:
