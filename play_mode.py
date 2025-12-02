@@ -1,7 +1,7 @@
 from pico2d import *
 import game_framework
 import game_world
-import character_select_mode
+import character_select as character_select_mode
 from ui import UI
 from background import Background
 from character1 import Character1
