@@ -26,6 +26,18 @@ def update():
 
 def draw():
     clear_canvas()
+
+    background.draw(400, 300)
+
+    font.draw(250, 450, 'FIGHTING GAME', (255, 255, 0))
+
+    menus = [
+        (MENU_VS_MODE, '1 vs 1 Mode', 250),
+        (MENU_AI_MODE, 'AI Mode', 200),
+        (MENU_HELP, 'Help', 150),
+        (MENU_EXIT, 'Exit', 100)
+    ]
+
     update_canvas()
 
 def handle_events():
