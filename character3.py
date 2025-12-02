@@ -270,7 +270,6 @@ class Character3:
         return left, bottom, right, top
 
     def take_damage(self, damage):
-        # 피격 중이거나 무적 시간 중이거나 죽은 상태면 데미지를 받지 않음
         if self.is_hit or self.hit_cooldown > 0 or self.is_dead:
             return
 
