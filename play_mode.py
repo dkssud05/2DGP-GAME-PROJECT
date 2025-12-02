@@ -98,14 +98,14 @@ def update():
                 char2_bb = char2.get_bb()
                 if collide(char1_attack_bb, char2_bb):
                     damage = char1.get_attack_damage()
-                    char2.take_damage(damage)
+                    char2.take_damage(damage, char1.attack_id)
 
             char2_attack_bb = char2.get_attack_bb()
             if char2_attack_bb:
                 char1_bb = char1.get_bb()
                 if collide(char2_attack_bb, char1_bb):
                     damage = char2.get_attack_damage()
-                    char1.take_damage(damage)
+                    char1.take_damage(damage, char2.attack_id)
 
         if char1.is_dead and not game_over:
             game_over = True
