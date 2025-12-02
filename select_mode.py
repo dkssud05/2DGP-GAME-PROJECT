@@ -1,11 +1,25 @@
 from pico2d import *
 import game_framework
 
+MENU_VS_MODE = 0
+MENU_AI_MODE = 1
+MENU_HELP = 2
+MENU_EXIT = 3
+
+selected_menu = MENU_VS_MODE
+font = None
+background = None
+
 def init():
-    pass
+    global font, background, selected_menu
+    font = load_font('C:/Windows/Fonts/arial.ttf', 40)
+    background = load_image('title.png')
+    selected_menu = MENU_VS_MODE
 
 def finish():
-    pass
+    global font, background
+    del font
+    del background
 
 def update():
     pass
