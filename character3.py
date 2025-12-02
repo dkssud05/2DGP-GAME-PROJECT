@@ -63,6 +63,9 @@ class Character3:
         self.hit_time = 0
         self.hit_duration = 0.5
 
+        self.attack_id = 0  # 각 공격마다 고유 ID
+        self.last_hit_by_attack_id = -1  # 마지막으로 맞은 공격 ID
+
     def update(self):
         frame_time = game_framework.frame_time
 
@@ -214,6 +217,7 @@ class Character3:
                     self.current_attack_type = 1
                     self.image = self.attack_image
                     self.attack_key_pressed = True
+                    self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack2_key:
                 if not self.attack2_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
@@ -223,6 +227,7 @@ class Character3:
                     self.current_attack_type = 2
                     self.image = self.attack2_image
                     self.attack2_key_pressed = True
+                    self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack3_key:
                 if not self.attack3_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
                     self.is_attacking = True
@@ -232,6 +237,7 @@ class Character3:
                     self.current_attack_type = 3
                     self.image = self.attack3_image
                     self.attack3_key_pressed = True
+                    self.attack_id += 1  # 새로운 공격마다 ID 증가
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key:
                 self.keys[event.key] = False
@@ -269,12 +275,25 @@ class Character3:
 
         return left, bottom, right, top
 
-    def take_damage(self, damage):
+    def take_damage(self, damage, attack_id):
+        # 같은 공격 ID로는 중복 피격 방지
+        if attack_id == self.last_hit_by_attack_id:
+            return
+
+        # 피격 중이거나 무적 시간 중이거나 죽은 상태면 데미지를 받지 않음
         if self.is_hit or self.hit_cooldown > 0 or self.is_dead:
             return
 
+        self.last_hit_by_attack_id = attack_id  # 이 공격 ID 기록
         self.hp -= damage
         self.hit_cooldown = 0.5  # 0.5초 무적 시간
+
+        # 공격 상태 초기화 (피격당하면 공격 취소)
+        self.is_attacking = False
+        self.attack_time = 0
+        self.attack_key_pressed = False
+        self.attack2_key_pressed = False
+        self.attack3_key_pressed = False
 
         if self.hp <= 0:
             self.hp = 0
