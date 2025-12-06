@@ -177,6 +177,10 @@ class Character1:
             draw_rectangle(*attack_bb)
 
     def handle_event(self, event):
+        # 죽은 상태에서는 모든 입력 무시
+        if self.is_dead:
+            return
+
         if self.player_id == 1:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
