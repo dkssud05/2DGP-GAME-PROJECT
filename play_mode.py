@@ -12,6 +12,14 @@ characters = []
 game_over = False
 game_over_time = 0
 winner = None
+# 5판 3선승제 변수
+round_over = False
+round_over_time = 0
+round_winner = None
+player1_wins = 0
+player2_wins = 0
+current_round = 1
+match_over = False
 
 def handle_events():
     events = get_events()
