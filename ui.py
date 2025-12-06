@@ -23,6 +23,10 @@ class UI:
     def is_time_over(self):
         return self.elapsed_time >= self.max_time
 
+    def reset_timer(self):
+        self.start_time = time.time()
+        self.elapsed_time = 0
+
     def draw(self):
         draw_rectangle(self.x-1, self.y-1, self.x + self.width+1, self.y + self.height+1, 0, 0, 0, filled=False)
 
