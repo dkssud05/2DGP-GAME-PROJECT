@@ -88,10 +88,6 @@ class Character1:
                 self.frame = 0
             return
 
-        # hit_cooldown 감소
-        if self.hit_cooldown > 0:
-            self.hit_cooldown -= frame_time
-
         if self.state == self.STATE_IDLE:
             self.frame = (self.frame + self.FRAMES_PER_IDLE * self.ACTION_PER_TIME * frame_time) % self.FRAMES_PER_IDLE
         elif self.state == self.STATE_RUN:
@@ -263,13 +259,12 @@ class Character1:
         if attack_id == self.last_hit_by_attack_id:
             return
 
-        # 피격 중이거나 무적 시간 중이거나 죽은 상태면 데미지를 받지 않음
-        if self.is_hit or self.hit_cooldown > 0 or self.is_dead:
+        # 피격 중이거나 죽은 상태면 데미지를 받지 않음 (피격 애니메이션 중 = 무적)
+        if self.is_hit or self.is_dead:
             return
 
         self.last_hit_by_attack_id = attack_id  # 이 공격 ID 기록
         self.hp -= damage
-        self.hit_cooldown = 0.5  # 0.5초 무적 시간
 
         # 공격 상태 초기화 (피격당하면 공격 취소)
         self.is_attacking = False
