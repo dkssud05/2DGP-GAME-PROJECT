@@ -32,8 +32,48 @@ def handle_events():
             for char in characters:
                 char.handle_event(event)
 
+def reset_round():
+    global characters, round_over, round_over_time, round_winner, current_round, game_over, game_over_time
+
+    round_over = False
+    round_over_time = 0
+    round_winner = None
+    game_over = False
+    game_over_time = 0
+    current_round += 1
+
+    # 캐릭터 위치 및 HP 초기화
+    if len(characters) >= 2:
+        characters[0].x = 200
+        characters[0].y = 200
+        characters[0].hp = 200
+        characters[0].is_dead = False
+        characters[0].velocity_y = 0
+        characters[0].on_ground = True
+
+        characters[1].x = 600
+        characters[1].y = 200
+        characters[1].hp = 200
+        characters[1].is_dead = False
+        characters[1].velocity_y = 0
+        characters[1].on_ground = True
+
+    # UI 초기화
+    ui1.update(200)
+    ui2.update(200)
+    ui1.reset_timer()
+
 def init():
-    global characters, ui1, ui2
+    global characters, ui1, ui2, round_over, round_over_time, round_winner
+    global player1_wins, player2_wins, current_round, match_over, game_over, game_over_time
+
+    # 라운드 변수 초기화
+    round_over = False
+    round_over_time = 0
+    round_winner = None
+    game_over = False
+    game_over_time = 0
+    match_over = False
 
     game_world.world = [[], []]
 
