@@ -272,6 +272,28 @@ def draw():
     game_world.render()
     ui1.draw()
     ui2.draw()
+
+    # 스코어 표시
+    score_font = load_font('C:/Windows/Fonts/arial.ttf', 25)
+    score_font.draw(100, 520, f'1P: {player1_wins}', (255, 255, 0))
+    score_font.draw(600, 520, f'2P: {player2_wins}', (255, 255, 0))
+
+    # 라운드 승자 표시
+    if round_over and not match_over:
+        result_font = load_font('C:/Windows/Fonts/arial.ttf', 40)
+        if round_winner == 1:
+            result_font.draw(250, 300, 'Round Win: 1P!', (255, 0, 0))
+        elif round_winner == 2:
+            result_font.draw(250, 300, 'Round Win: 2P!', (0, 0, 255))
+
+    # 최종 승자 표시
+    if match_over:
+        final_font = load_font('C:/Windows/Fonts/arial.ttf', 50)
+        if winner == "1P":
+            final_font.draw(200, 300, 'WINNER: 1P!!!', (255, 0, 0))
+        elif winner == "2P":
+            final_font.draw(200, 300, 'WINNER: 2P!!!', (0, 0, 255))
+
     update_canvas()
 
 def finish():
