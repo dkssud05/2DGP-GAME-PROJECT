@@ -213,7 +213,7 @@ class Character3:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                if not self.attack_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -223,7 +223,7 @@ class Character3:
                     self.attack_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack2_key:
-                if not self.attack2_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack2_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -233,7 +233,7 @@ class Character3:
                     self.attack2_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack3_key:
-                if not self.attack3_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack3_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
