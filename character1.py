@@ -242,7 +242,7 @@ class Character1:
         if current_frame not in [2, 3, 4]:
             return None
 
-        attack_width = 140
+        attack_width = 160
         attack_height = 100
 
         if self.face_dir == 1:  # 오른쪽 공격
