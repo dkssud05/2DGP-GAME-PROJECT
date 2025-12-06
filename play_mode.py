@@ -60,6 +60,12 @@ def reset_round():
         characters[0].hit_time = 0
         characters[0].death_time = 0
         characters[0].dir = 0
+        characters[0].is_guarding = False
+        # 키 입력 상태 초기화
+        for key in characters[0].keys:
+            characters[0].keys[key] = False
+        characters[0].attack_key_pressed = False
+        characters[0].attack2_key_pressed = False
 
         # Player 2 초기화
         characters[1].x = 600
@@ -77,6 +83,15 @@ def reset_round():
         characters[1].hit_time = 0
         characters[1].death_time = 0
         characters[1].dir = 0
+        characters[1].is_guarding = False
+        # 키 입력 상태 초기화
+        for key in characters[1].keys:
+            characters[1].keys[key] = False
+        characters[1].attack_key_pressed = False
+        characters[1].attack2_key_pressed = False
+        # Character3는 attack3_key_pressed도 있을 수 있음
+        if hasattr(characters[1], 'attack3_key_pressed'):
+            characters[1].attack3_key_pressed = False
 
     # UI 초기화
     ui1.update(200)
