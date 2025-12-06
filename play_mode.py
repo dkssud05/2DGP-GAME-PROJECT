@@ -44,19 +44,39 @@ def reset_round():
 
     # 캐릭터 위치 및 HP 초기화
     if len(characters) >= 2:
+        # Player 1 초기화
         characters[0].x = 200
-        characters[0].y = 200
+        characters[0].y = 100
         characters[0].hp = 200
         characters[0].is_dead = False
-        characters[0].velocity_y = 0
-        characters[0].on_ground = True
+        characters[0].is_jumping = False
+        characters[0].jump_velocity = 0
+        characters[0].state = characters[0].STATE_IDLE
+        characters[0].frame = 0.0
+        characters[0].is_attacking = False
+        characters[0].attack_time = 0
+        characters[0].is_hit = False
+        characters[0].hit_cooldown = 0
+        characters[0].hit_time = 0
+        characters[0].death_time = 0
+        characters[0].dir = 0
 
+        # Player 2 초기화
         characters[1].x = 600
-        characters[1].y = 200
+        characters[1].y = 100
         characters[1].hp = 200
         characters[1].is_dead = False
-        characters[1].velocity_y = 0
-        characters[1].on_ground = True
+        characters[1].is_jumping = False
+        characters[1].jump_velocity = 0
+        characters[1].state = characters[1].STATE_IDLE
+        characters[1].frame = 0.0
+        characters[1].is_attacking = False
+        characters[1].attack_time = 0
+        characters[1].is_hit = False
+        characters[1].hit_cooldown = 0
+        characters[1].hit_time = 0
+        characters[1].death_time = 0
+        characters[1].dir = 0
 
     # UI 초기화
     ui1.update(200)
