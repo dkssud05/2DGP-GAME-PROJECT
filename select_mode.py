@@ -48,9 +48,6 @@ def draw():
             # 선택되지 않은 메뉴는 화살표 없이 표시
             font.draw(250, y_pos, menu_text, (255, 255, 255))
 
-    # 하단 안내 문구
-    small_font = load_font('C:/Windows/Fonts/arial.ttf', 20)
-    small_font.draw(250, 50, 'UP/DOWN: Select, ENTER: Confirm, ESC: Quit', (150, 150, 150))
 
     update_canvas()
 
