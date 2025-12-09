@@ -2,13 +2,17 @@ from pico2d import *
 import game_framework
 
 class Character3:
-    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT, STATE_GUARD = 0, 1, 2, 3, 4, 5, 6, 7
+    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT, STATE_GUARD, STATE_DASH = 0, 1, 2, 3, 4, 5, 6, 7, 8
 
     PIXEL_PER_METER = (10.0 / 0.3)
     RUN_SPEED_KMPH = 21.0
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+    DASH_SPEED_MULTIPLIER = 2.5
+    DASH_DURATION = 0.25
+    DASH_COOLDOWN = 0.8
 
     TIME_PER_ACTION = 0.5
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -70,6 +74,13 @@ class Character3:
         self.is_guarding = False
         self.guard_damage_reduction = 0.5  # 방어 시 데미지 50% 감소
 
+        # 대쉬 관련
+        self.is_dashing = False
+        self.dash_time = 0
+        self.dash_cooldown_time = 0
+        self.dash_dir = 0
+        self.dash_key_pressed = False
+
     def update(self):
         frame_time = game_framework.frame_time
 
@@ -89,6 +100,30 @@ class Character3:
             if self.hit_time >= self.hit_duration:
                 self.is_hit = False
                 self.hit_time = 0
+                self.state = self.STATE_IDLE
+                self.image = self.idle_image
+                self.frame = 0
+            return
+
+        # 대쉬 상태 처리
+        if self.state == self.STATE_DASH:
+            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time * 2) % self.FRAMES_PER_RUN
+            self.dash_time += frame_time
+
+            # 대쉬 이동
+            self.x += self.dash_dir * self.RUN_SPEED_PPS * self.DASH_SPEED_MULTIPLIER * frame_time
+
+            # 화면 경계 체크
+            if self.x < 40:
+                self.x = 40
+            elif self.x > 760:
+                self.x = 760
+
+            # 대쉬 종료
+            if self.dash_time >= self.DASH_DURATION:
+                self.is_dashing = False
+                self.dash_time = 0
+                self.dash_cooldown_time = self.DASH_COOLDOWN
                 self.state = self.STATE_IDLE
                 self.image = self.idle_image
                 self.frame = 0
@@ -212,6 +247,7 @@ class Character3:
             attack2_key = SDLK_LSHIFT
             attack3_key = SDLK_LALT
             guard_key = SDLK_s
+            dash_key = SDLK_SPACE
         else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
@@ -219,6 +255,7 @@ class Character3:
             attack2_key = SDLK_RSHIFT
             attack3_key = SDLK_RALT
             guard_key = SDLK_DOWN
+            dash_key = SDLK_KP_0  # 숫자패드 0
 
         if event.type == SDL_KEYDOWN:
             if event.key == left_key or event.key == right_key or event.key == guard_key:
@@ -261,6 +298,25 @@ class Character3:
                     self.image = self.attack3_image
                     self.attack3_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
+            elif event.key == dash_key:
+                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and not self.is_jumping and self.dash_cooldown_time <= 0:
+                    # 현재 방향키가 눌려있는 방향으로 대쉬
+                    if self.keys.get(left_key, False):
+                        self.dash_dir = -1
+                        self.face_dir = -1
+                    elif self.keys.get(right_key, False):
+                        self.dash_dir = 1
+                        self.face_dir = 1
+                    else:
+                        # 방향키가 안 눌려있으면 보고있는 방향으로 대쉬
+                        self.dash_dir = self.face_dir
+
+                    self.is_dashing = True
+                    self.dash_time = 0
+                    self.state = self.STATE_DASH
+                    self.image = self.run_image
+                    self.frame = 0.0
+                    self.dash_key_pressed = True
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key or event.key == guard_key:
                 self.keys[event.key] = False
@@ -270,6 +326,8 @@ class Character3:
                 self.attack2_key_pressed = False
             elif event.key == attack3_key:
                 self.attack3_key_pressed = False
+            elif event.key == dash_key:
+                self.dash_key_pressed = False
 
     def get_bb(self):
         return self.x - self.hitbox_width // 2, self.y - self.hitbox_height // 2, self.x + self.hitbox_width // 2, self.y + self.hitbox_height // 2
