@@ -55,7 +55,7 @@ class Character1:
         self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
-        self.attack_damage = 15
+        self.attack_damage = 18  # 균형형 - 중간 데미지
 
         self.is_dead = False
         self.death_time = 0
