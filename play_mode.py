@@ -165,6 +165,9 @@ def update():
     global game_over, game_over_time, winner, round_over, round_over_time, round_winner
     global player1_wins, player2_wins, match_over
 
+    char1_prev_x = 0
+    char2_prev_x = 0
+
     if len(characters) >= 2:
         char1 = characters[0]
         char2 = characters[1]
@@ -222,7 +225,7 @@ def update():
                 elif char2.x > 760:
                     char2.x = 760
             else:
-                # 대쉬가 아니면 이전 위치로 되돌림
+                # 대쉬가 아니면 이전 위치로 되돌림 (속도에 상관없이 그냥 멈춤)
                 char1.x = char1_prev_x
                 char2.x = char2_prev_x
 
