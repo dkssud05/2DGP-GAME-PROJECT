@@ -59,7 +59,7 @@ class Character2:
         self.hp = 200
         self.is_hit = False
         self.hit_cooldown = 0
-        self.attack_damage = 14  # 스피드형 - 낮은 데미지
+        self.attack_damage = 19  # 스피드형 - 낮은 데미지
 
         self.is_dead = False
         self.death_time = 0
