@@ -21,6 +21,9 @@ player2_wins = 0
 current_round = 1
 match_over = False
 
+# 배경음악
+battle_music = None
+
 def handle_events():
     events = get_events()
     for event in events:
@@ -109,6 +112,17 @@ def reset_round():
 def init():
     global characters, ui1, ui2, round_over, round_over_time, round_winner
     global player1_wins, player2_wins, current_round, match_over, game_over, game_over_time
+    global battle_music
+
+    # 배경음악 로드 및 무한 반복 재생
+    try:
+        battle_music = load_music('battle_sound.mp3')
+        battle_music.set_volume(50)  # 볼륨 50으로 설정 (0~128)
+        battle_music.repeat_play()  # 무한 반복 재생
+        print("배경음악 재생 시작")
+    except Exception as e:
+        print(f"배경음악 로드 실패: {e}")
+        battle_music = None
 
     # 라운드 변수 초기화
     round_over = False
@@ -336,6 +350,9 @@ def update():
             round_over_time += game_framework.frame_time
             if round_over_time >= 3.0:
                 print("게임 종료!")
+                if battle_music:
+                    battle_music.stop()
+                    print("배경음악 중지")
                 game_framework.quit()
 
         if len(characters) == 2:
@@ -383,6 +400,9 @@ def draw():
     update_canvas()
 
 def finish():
+    global battle_music
+    if battle_music:
+        battle_music.stop()
     game_world.clear()
 
 def pause():
