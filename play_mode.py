@@ -183,8 +183,39 @@ def update():
         char1_bb = char1.get_bb()
         char2_bb = char2.get_bb()
         if collide(char1_bb, char2_bb):
-            char1.x = char1_prev_x
-            char2.x = char2_prev_x
+            # 각 캐릭터의 중심점 계산
+            char1_center_x = char1.x
+            char2_center_x = char2.x
+
+            # 겹친 영역 계산
+            overlap_left = max(char1_bb[0], char2_bb[0])
+            overlap_right = min(char1_bb[2], char2_bb[2])
+            overlap_width = overlap_right - overlap_left
+
+            # 각 캐릭터의 너비
+            char1_width = char1_bb[2] - char1_bb[0]
+            char2_width = char2_bb[2] - char2_bb[0]
+            char1_half_width = char1_width / 2
+            char2_half_width = char2_width / 2
+
+            # 캐릭터1이 캐릭터2의 중심 기준으로 왼쪽에 있는지 오른쪽에 있는지 판단
+            if char1_center_x < char2_center_x:
+                # char1이 왼쪽에 있음 -> char1을 왼쪽으로, char2를 오른쪽으로 밀어냄
+                char1.x = char2_center_x - char2_half_width - char1_half_width
+            else:
+                # char1이 오른쪽에 있음 -> char1을 오른쪽으로, char2를 왼쪽으로 밀어냄
+                char1.x = char2_center_x + char2_half_width + char1_half_width
+
+            # 화면 경계 체크
+            if char1.x < 40:
+                char1.x = 40
+            elif char1.x > 760:
+                char1.x = 760
+
+            if char2.x < 40:
+                char2.x = 40
+            elif char2.x > 760:
+                char2.x = 760
 
         if not round_over and not match_over:
             char1_attack_bb = char1.get_attack_bb()
