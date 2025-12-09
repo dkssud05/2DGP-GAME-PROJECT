@@ -84,6 +84,9 @@ class Character3:
     def update(self):
         frame_time = game_framework.frame_time
 
+        # 대쉬 쿨타임 감소
+        if self.dash_cooldown_time > 0:
+            self.dash_cooldown_time -= frame_time
 
         # 죽음 상태 처리
         if self.state == self.STATE_DEATH:
@@ -105,22 +108,25 @@ class Character3:
                 self.frame = 0
             return
 
-        # 대쉬 상태 처리
+        # 대쉬 상태 처리 (순간이동 방식)
         if self.state == self.STATE_DASH:
-            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time * 2) % self.FRAMES_PER_RUN
+            # 대쉬 시작 시 즉시 이동
+            if self.dash_time == 0:
+                dash_distance = 150  # 순간이동 거리
+                self.x += self.dash_dir * dash_distance
+
+                # 화면 경계 체크
+                if self.x < 40:
+                    self.x = 40
+                elif self.x > 760:
+                    self.x = 760
+
+            # 대쉬 애니메이션
+            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time * 3) % self.FRAMES_PER_RUN
             self.dash_time += frame_time
 
-            # 대쉬 이동
-            self.x += self.dash_dir * self.RUN_SPEED_PPS * self.DASH_SPEED_MULTIPLIER * frame_time
-
-            # 화면 경계 체크
-            if self.x < 40:
-                self.x = 40
-            elif self.x > 760:
-                self.x = 760
-
             # 대쉬 종료
-            if self.dash_time >= self.DASH_DURATION:
+            if self.dash_time >= 0.15:  # 짧은 애니메이션 시간
                 self.is_dashing = False
                 self.dash_time = 0
                 self.dash_cooldown_time = self.DASH_COOLDOWN

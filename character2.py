@@ -103,22 +103,25 @@ class Character2:
                 self.frame = 0
             return
 
-        # 대쉬 상태 처리
+        # 대쉬 상태 처리 (순간이동 방식)
         if self.state == self.STATE_DASH:
-            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time * 2) % self.FRAMES_PER_RUN
+            # 대쉬 시작 시 즉시 이동
+            if self.dash_time == 0:
+                dash_distance = 150  # 순간이동 거리
+                self.x += self.dash_dir * dash_distance
+
+                # 화면 경계 체크
+                if self.x < 40:
+                    self.x = 40
+                elif self.x > 760:
+                    self.x = 760
+
+            # 대쉬 애니메이션
+            self.frame = (self.frame + self.FRAMES_PER_RUN * self.ACTION_PER_TIME * frame_time * 3) % self.FRAMES_PER_RUN
             self.dash_time += frame_time
 
-            # 대쉬 이동
-            self.x += self.dash_dir * self.RUN_SPEED_PPS * self.DASH_SPEED_MULTIPLIER * frame_time
-
-            # 화면 경계 체크
-            if self.x < 40:
-                self.x = 40
-            elif self.x > 760:
-                self.x = 760
-
             # 대쉬 종료
-            if self.dash_time >= self.DASH_DURATION:
+            if self.dash_time >= 0.15:  # 짧은 애니메이션 시간
                 self.is_dashing = False
                 self.dash_time = 0
                 self.dash_cooldown_time = self.DASH_COOLDOWN
@@ -283,6 +286,25 @@ class Character2:
                     self.image = self.attack2_image
                     self.attack2_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
+            elif event.key == dash_key:
+                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and not self.is_jumping and self.dash_cooldown_time <= 0:
+                    # 현재 방향키가 눌려있는 방향으로 대쉬
+                    if self.keys.get(left_key, False):
+                        self.dash_dir = -1
+                        self.face_dir = -1
+                    elif self.keys.get(right_key, False):
+                        self.dash_dir = 1
+                        self.face_dir = 1
+                    else:
+                        # 방향키가 안 눌려있으면 보고있는 방향으로 대쉬
+                        self.dash_dir = self.face_dir
+
+                    self.is_dashing = True
+                    self.dash_time = 0
+                    self.state = self.STATE_DASH
+                    self.image = self.run_image
+                    self.frame = 0.0
+                    self.dash_key_pressed = True
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key or event.key == guard_key:
                 self.keys[event.key] = False
