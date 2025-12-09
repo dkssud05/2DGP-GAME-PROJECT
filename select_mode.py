@@ -72,7 +72,7 @@ def handle_events():
                     game_framework.change_mode(character_select)
                 elif selected_menu == MENU_AI_MODE:
                     # AI 모드는 구현 안됨
-                    print("AI 모드는 구현 안됐다")
+                    print("아직 구현 안됐습니다!")
                 elif selected_menu == MENU_HELP:
                     # Help 화면으로 이동
                     game_framework.change_mode(help_mode)
