@@ -80,6 +80,10 @@ class Character1:
     def update(self):
         frame_time = game_framework.frame_time
 
+        # 대쉬 쿨타임 감소
+        if self.dash_cooldown_time > 0:
+            self.dash_cooldown_time -= frame_time
+
         # 죽음 상태 처리
         if self.state == self.STATE_DEATH:
             if self.frame < self.FRAMES_PER_DEATH - 1:
