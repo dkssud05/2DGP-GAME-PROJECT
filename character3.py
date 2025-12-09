@@ -306,7 +306,7 @@ class Character3:
                     self.attack3_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == dash_key:
-                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and not self.is_jumping and self.dash_cooldown_time <= 0 and self.dash_count > 0:
+                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and self.dash_cooldown_time <= 0 and self.dash_count > 0:
                     # 현재 방향키가 눌려있는 방향으로 대쉬
                     if self.keys.get(left_key, False):
                         self.dash_dir = -1
