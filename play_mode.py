@@ -314,8 +314,8 @@ def draw():
 
     # 스코어 표시
     score_font = load_font('C:/Windows/Fonts/arial.ttf', 25)
-    score_font.draw(100, 520, f'1P: {player1_wins}', (255, 255, 0))
-    score_font.draw(600, 520, f'2P: {player2_wins}', (255, 255, 0))
+    score_font.draw(150, 520, f'1P: {player1_wins}', (255, 255, 255))
+    score_font.draw(550, 520, f'2P: {player2_wins}', (255, 255, 255))
 
     # 라운드 승자 표시
     if round_over and not match_over:
