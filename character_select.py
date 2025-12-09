@@ -5,13 +5,15 @@ selected_character = None
 selected_character2 = None
 highlighted = 1
 selection_step = 1
+background = None
 char1_image = None
 char2_image = None
 char3_image = None
 
 def init():
-    global char1_image, char2_image, char3_image, highlighted, selected_character, selected_character2, selection_step
+    global char1_image, char2_image, char3_image, background, highlighted, selected_character, selected_character2, selection_step
 
+    background = load_image('select_background.png')
     char1_image = load_image('character1.motion/char1_Idle.png')
     char2_image = load_image('character2.motion/char2_Idle.png')
     char3_image = load_image('character3.motion/char3_Idle.png')
@@ -22,7 +24,8 @@ def init():
     selection_step = 1
 
 def finish():
-    global char1_image, char2_image, char3_image
+    global char1_image, char2_image, char3_image, background
+    del background
     del char1_image
     del char2_image
     del char3_image
@@ -32,6 +35,9 @@ def update():
 
 def draw():
     clear_canvas()
+
+    # 배경 이미지 먼저 그리기
+    background.draw(400, 300)
 
     if selected_character == 1:
         draw_rectangle(200 - 90, 300 - 90, 200 + 90, 300 + 90)

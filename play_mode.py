@@ -12,6 +12,14 @@ characters = []
 game_over = False
 game_over_time = 0
 winner = None
+# 5판 3선승제 변수
+round_over = False
+round_over_time = 0
+round_winner = None
+player1_wins = 0
+player2_wins = 0
+current_round = 1
+match_over = False
 
 def handle_events():
     events = get_events()
@@ -24,8 +32,87 @@ def handle_events():
             for char in characters:
                 char.handle_event(event)
 
+def reset_round():
+    global characters, round_over, round_over_time, round_winner, current_round, game_over, game_over_time
+
+    round_over = False
+    round_over_time = 0
+    round_winner = None
+    game_over = False
+    game_over_time = 0
+    current_round += 1
+
+    # 캐릭터 위치 및 HP 초기화
+    if len(characters) >= 2:
+        # Player 1 초기화
+        characters[0].x = 200
+        characters[0].y = 100
+        characters[0].hp = 200
+        characters[0].is_dead = False
+        characters[0].is_jumping = False
+        characters[0].jump_velocity = 0
+        characters[0].state = characters[0].STATE_IDLE
+        characters[0].frame = 0.0
+        characters[0].is_attacking = False
+        characters[0].attack_time = 0
+        characters[0].is_hit = False
+        characters[0].hit_cooldown = 0
+        characters[0].hit_time = 0
+        characters[0].death_time = 0
+        characters[0].dir = 0
+        characters[0].is_guarding = False
+        characters[0].image = characters[0].idle_image  # 이미지를 idle로 초기화
+        # 키 입력 상태 초기화
+        for key in characters[0].keys:
+            characters[0].keys[key] = False
+        characters[0].attack_key_pressed = False
+        characters[0].attack2_key_pressed = False
+        if hasattr(characters[0], 'attack3_key_pressed'):
+            characters[0].attack3_key_pressed = False
+
+        # Player 2 초기화
+        characters[1].x = 600
+        characters[1].y = 100
+        characters[1].hp = 200
+        characters[1].is_dead = False
+        characters[1].is_jumping = False
+        characters[1].jump_velocity = 0
+        characters[1].state = characters[1].STATE_IDLE
+        characters[1].frame = 0.0
+        characters[1].is_attacking = False
+        characters[1].attack_time = 0
+        characters[1].is_hit = False
+        characters[1].hit_cooldown = 0
+        characters[1].hit_time = 0
+        characters[1].death_time = 0
+        characters[1].dir = 0
+        characters[1].is_guarding = False
+        characters[1].image = characters[1].idle_image  # 이미지를 idle로 초기화
+        # 키 입력 상태 초기화
+        for key in characters[1].keys:
+            characters[1].keys[key] = False
+        characters[1].attack_key_pressed = False
+        characters[1].attack2_key_pressed = False
+        # Character3는 attack3_key_pressed도 있을 수 있음
+        if hasattr(characters[1], 'attack3_key_pressed'):
+            characters[1].attack3_key_pressed = False
+
+    # UI 초기화
+    ui1.update(200)
+    ui2.update(200)
+    ui1.reset_timer()
+
 def init():
-    global characters, ui1, ui2
+    global characters, ui1, ui2, round_over, round_over_time, round_winner
+    global player1_wins, player2_wins, current_round, match_over, game_over, game_over_time
+
+    # 라운드 변수 초기화
+    round_over = False
+    round_over_time = 0
+    round_winner = None
+    game_over = False
+    game_over_time = 0
+    match_over = False
 
     game_world.world = [[], []]
 
@@ -71,7 +158,8 @@ def init():
 
 
 def update():
-    global game_over, game_over_time, winner
+    global game_over, game_over_time, winner, round_over, round_over_time, round_winner
+    global player1_wins, player2_wins, match_over
 
     if len(characters) >= 2:
         char1 = characters[0]
@@ -80,7 +168,9 @@ def update():
         char1_prev_x = char1.x
         char2_prev_x = char2.x
 
-    game_world.update()
+    # 매치가 끝나지 않았을 때만 게임 진행
+    if not match_over:
+        game_world.update()
 
     if len(characters) >= 2:
         char1 = characters[0]
@@ -92,7 +182,7 @@ def update():
             char1.x = char1_prev_x
             char2.x = char2_prev_x
 
-        if not game_over:
+        if not round_over and not match_over:
             char1_attack_bb = char1.get_attack_bb()
             if char1_attack_bb:
                 char2_bb = char2.get_bb()
@@ -107,47 +197,103 @@ def update():
                     damage = char2.get_attack_damage()
                     char1.take_damage(damage, char2.attack_id)
 
-        if char1.is_dead and not game_over:
-            game_over = True
-            game_over_time = 0
-            winner = "2번째 선택 캐릭터"
+        # 라운드 종료 처리
+        if char1.is_dead and not round_over and not match_over:
+            round_over = True
+            round_over_time = 0
+            round_winner = 2
+            player2_wins += 1
             print("=" * 50)
-            print(f"{winner} 승리!")
-            print("3초 후 게임이 종료됩니다...")
-            print("=" * 50)
-        elif char2.is_dead and not game_over:
-            game_over = True
-            game_over_time = 0
-            winner = "1번째 선택 캐릭터"
-            print("=" * 50)
-            print(f"{winner} 승리!")
-            print("3초 후 게임이 종료됩니다...")
+            print(f"라운드 {current_round} - 2P 승리!")
+            print(f"현재 스코어: 1P {player1_wins} vs {player2_wins} 2P")
             print("=" * 50)
 
-        if game_over:
-            game_over_time += game_framework.frame_time
-            if game_over_time >= 3.0:
+            if player2_wins >= 3:
+                match_over = True
+                winner = "2P"
+                print("=" * 50)
+                print(f"*** {winner} 최종 승리! ***")
+                print("3초 후 게임이 종료됩니다...")
+                print("=" * 50)
+
+        elif char2.is_dead and not round_over and not match_over:
+            round_over = True
+            round_over_time = 0
+            round_winner = 1
+            player1_wins += 1
+            print("=" * 50)
+            print(f"라운드 {current_round} - 1P 승리!")
+            print(f"현재 스코어: 1P {player1_wins} vs {player2_wins} 2P")
+            print("=" * 50)
+
+            if player1_wins >= 3:
+                match_over = True
+                winner = "1P"
+                print("=" * 50)
+                print(f"*** {winner} 최종 승리! ***")
+                print("3초 후 게임이 종료됩니다...")
+                print("=" * 50)
+
+        # 시간 종료 처리
+        if ui1.is_time_over() and not round_over and not match_over:
+            round_over = True
+            round_over_time = 0
+            if char1.hp > char2.hp:
+                round_winner = 1
+                player1_wins += 1
+                print("=" * 50)
+                print("시간 종료!")
+                print(f"라운드 {current_round} - 1P 승리!")
+                print(f"현재 스코어: 1P {player1_wins} vs {player2_wins} 2P")
+                print("=" * 50)
+
+                if player1_wins >= 3:
+                    match_over = True
+                    winner = "1P"
+                    print("=" * 50)
+                    print(f"*** {winner} 최종 승리! ***")
+                    print("3초 후 게임이 종료됩니다...")
+                    print("=" * 50)
+
+            elif char2.hp > char1.hp:
+                round_winner = 2
+                player2_wins += 1
+                print("=" * 50)
+                print("시간 종료!")
+                print(f"라운드 {current_round} - 2P 승리!")
+                print(f"현재 스코어: 1P {player1_wins} vs {player2_wins} 2P")
+                print("=" * 50)
+
+                if player2_wins >= 3:
+                    match_over = True
+                    winner = "2P"
+                    print("=" * 50)
+                    print(f"*** {winner} 최종 승리! ***")
+                    print("3초 후 게임이 종료됩니다...")
+                    print("=" * 50)
+            else:
+                # 무승부는 라운드를 다시 함
+                print("=" * 50)
+                print("시간 종료! 무승부!")
+                print("라운드를 다시 시작합니다...")
+                print("=" * 50)
+
+        # 라운드 대기 시간
+        if round_over and not match_over:
+            round_over_time += game_framework.frame_time
+            if round_over_time >= 2.0:
+                reset_round()
+
+        # 매치 종료 대기 시간
+        if match_over:
+            round_over_time += game_framework.frame_time
+            if round_over_time >= 3.0:
                 print("게임 종료!")
                 game_framework.quit()
 
         if len(characters) == 2:
             ui1.update(characters[0].hp)
             ui2.update(characters[1].hp)
-
-        if ui1.is_time_over() and not game_over:
-            game_over = True
-            game_over_time = 0
-            if char1.hp > char2.hp:
-                winner = "1번째 선택 캐릭터"
-            elif char2.hp > char1.hp:
-                winner = "2번째 선택 캐릭터"
-            else:
-                winner = "무승부"
-            print("=" * 50)
-            print("시간 종료!")
-            print(f"{winner} 승리!")
-            print("3초 후 게임이 종료됩니다...")
-            print("=" * 50)
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a
@@ -165,6 +311,28 @@ def draw():
     game_world.render()
     ui1.draw()
     ui2.draw()
+
+    # 스코어 표시
+    score_font = load_font('C:/Windows/Fonts/arial.ttf', 25)
+    score_font.draw(100, 520, f'1P: {player1_wins}', (255, 255, 0))
+    score_font.draw(600, 520, f'2P: {player2_wins}', (255, 255, 0))
+
+    # 라운드 승자 표시
+    if round_over and not match_over:
+        result_font = load_font('C:/Windows/Fonts/arial.ttf', 40)
+        if round_winner == 1:
+            result_font.draw(250, 300, 'Round Win: 1P!', (255, 0, 0))
+        elif round_winner == 2:
+            result_font.draw(250, 300, 'Round Win: 2P!', (0, 0, 255))
+
+    # 최종 승자 표시
+    if match_over:
+        final_font = load_font('C:/Windows/Fonts/arial.ttf', 50)
+        if winner == "1P":
+            final_font.draw(200, 300, 'WINNER: 1P!!!', (255, 0, 0))
+        elif winner == "2P":
+            final_font.draw(200, 300, 'WINNER: 2P!!!', (0, 0, 255))
+
     update_canvas()
 
 def finish():

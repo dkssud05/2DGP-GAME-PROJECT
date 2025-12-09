@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 
 class Character3:
-    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT = 0, 1, 2, 3, 4, 5, 6
+    STATE_IDLE, STATE_RUN, STATE_JUMP, STATE_FALL, STATE_ATTACK, STATE_DEATH, STATE_HIT, STATE_GUARD = 0, 1, 2, 3, 4, 5, 6, 7
 
     PIXEL_PER_METER = (10.0 / 0.3)
     RUN_SPEED_KMPH = 21.0
@@ -65,6 +65,10 @@ class Character3:
 
         self.attack_id = 0  # 각 공격마다 고유 ID
         self.last_hit_by_attack_id = -1  # 마지막으로 맞은 공격 ID
+
+        # 방어 관련
+        self.is_guarding = False
+        self.guard_damage_reduction = 0.5  # 방어 시 데미지 50% 감소
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -146,10 +150,21 @@ class Character3:
         elif not self.is_attacking:
             if self.player_id == 1:
                 left_key, right_key = SDLK_a, SDLK_d
+                guard_key = SDLK_s
             else:
                 left_key, right_key = SDLK_LEFT, SDLK_RIGHT
+                guard_key = SDLK_DOWN
 
-            if self.keys[left_key] and not self.keys[right_key]:
+            # 방어 키를 누르고 있으면 방어 상태
+            if self.keys.get(guard_key, False):
+                self.is_guarding = True
+                self.dir = 0  # 방어 중에는 이동 불가
+                if self.state != self.STATE_GUARD:
+                    self.state = self.STATE_GUARD
+                    self.image = self.idle_image
+                    self.frame = 0
+            elif self.keys[left_key] and not self.keys[right_key]:
+                self.is_guarding = False
                 self.dir = -1
                 self.face_dir = -1
                 if self.state != self.STATE_RUN:
@@ -157,6 +172,7 @@ class Character3:
                     self.image = self.run_image
                     self.frame = 0
             elif self.keys[right_key] and not self.keys[left_key]:
+                self.is_guarding = False
                 self.dir = 1
                 self.face_dir = 1
                 if self.state != self.STATE_RUN:
@@ -164,6 +180,7 @@ class Character3:
                     self.image = self.run_image
                     self.frame = 0
             else:
+                self.is_guarding = False
                 self.dir = 0
                 if self.state != self.STATE_IDLE:
                     self.state = self.STATE_IDLE
@@ -184,21 +201,27 @@ class Character3:
             draw_rectangle(*attack_bb)
 
     def handle_event(self, event):
+        # 죽은 상태에서는 모든 입력 무시
+        if self.is_dead:
+            return
+
         if self.player_id == 1:
             left_key, right_key = SDLK_a, SDLK_d
             jump_key = SDLK_w
             attack_key = SDLK_LCTRL
             attack2_key = SDLK_LSHIFT
             attack3_key = SDLK_LALT
+            guard_key = SDLK_s
         else:
             left_key, right_key = SDLK_LEFT, SDLK_RIGHT
             jump_key = SDLK_UP
             attack_key = SDLK_RCTRL
             attack2_key = SDLK_RSHIFT
             attack3_key = SDLK_RALT
+            guard_key = SDLK_DOWN
 
         if event.type == SDL_KEYDOWN:
-            if event.key == left_key or event.key == right_key:
+            if event.key == left_key or event.key == right_key or event.key == guard_key:
                 self.keys[event.key] = True
             elif event.key == jump_key:
                 if not self.is_jumping and not self.is_attacking:
@@ -209,7 +232,7 @@ class Character3:
                     self.state = self.STATE_JUMP
                     self.image = self.jump_image
             elif event.key == attack_key:
-                if not self.attack_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -219,7 +242,7 @@ class Character3:
                     self.attack_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack2_key:
-                if not self.attack2_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack2_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -229,7 +252,7 @@ class Character3:
                     self.attack2_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == attack3_key:
-                if not self.attack3_key_pressed and not self.is_attacking and not self.is_jumping and not self.is_hit:
+                if not self.attack3_key_pressed and not self.is_attacking and not self.is_hit:
                     self.is_attacking = True
                     self.attack_time = 0
                     self.frame = 0.0
@@ -239,7 +262,7 @@ class Character3:
                     self.attack3_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
         elif event.type == SDL_KEYUP:
-            if event.key == left_key or event.key == right_key:
+            if event.key == left_key or event.key == right_key or event.key == guard_key:
                 self.keys[event.key] = False
             elif event.key == attack_key:
                 self.attack_key_pressed = False
@@ -280,13 +303,18 @@ class Character3:
         if attack_id == self.last_hit_by_attack_id:
             return
 
-        # 피격 중이거나 무적 시간 중이거나 죽은 상태면 데미지를 받지 않음
-        if self.is_hit or self.hit_cooldown > 0 or self.is_dead:
+        # 피격 중이거나 죽은 상태면 데미지를 받지 않음 (피격 애니메이션 중 = 무적)
+        if self.is_hit or self.is_dead:
             return
 
         self.last_hit_by_attack_id = attack_id  # 이 공격 ID 기록
+
+        # 방어 중이면 데미지 감소
+        if self.is_guarding:
+            damage = int(damage * self.guard_damage_reduction)
+            print(f"[Player {self.player_id}] 방어! 데미지 {int(damage / self.guard_damage_reduction)} -> {damage}")
+
         self.hp -= damage
-        self.hit_cooldown = 0.5  # 0.5초 무적 시간
 
         # 공격 상태 초기화 (피격당하면 공격 취소)
         self.is_attacking = False
@@ -303,11 +331,13 @@ class Character3:
             self.frame = 0
             self.death_time = 0
         else:
-            self.is_hit = True
-            self.hit_time = 0
-            self.state = self.STATE_HIT
-            self.image = self.hit_image
-            self.frame = 0
+            # 방어 중이면 피격 애니메이션 없이 방어 유지
+            if not self.is_guarding:
+                self.is_hit = True
+                self.hit_time = 0
+                self.state = self.STATE_HIT
+                self.image = self.hit_image
+                self.frame = 0
 
         pick_order = "1번째 선택" if self.player_id == 1 else "2번째 선택"
         print(f"[{pick_order}] Character3 HP: {self.hp}/{self.max_hp}")
