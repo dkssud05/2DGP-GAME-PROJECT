@@ -102,8 +102,8 @@ class Character1:
 
         # 대쉬 상태 처리 (순간이동 방식)
         if self.state == self.STATE_DASH:
-            # 대쉬 시작 시 즉시 이동
-            if self.dash_time == 0:
+            # 대쉬 시작 시 즉시 이동 (첫 프레임에만)
+            if self.dash_time < frame_time:
                 dash_distance = 150  # 순간이동 거리
                 self.x += self.dash_dir * dash_distance
 
