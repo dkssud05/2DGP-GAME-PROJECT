@@ -69,6 +69,8 @@ def reset_round():
         characters[0].attack2_key_pressed = False
         if hasattr(characters[0], 'attack3_key_pressed'):
             characters[0].attack3_key_pressed = False
+        # 대쉬 횟수 초기화
+        characters[0].dash_count = 1
 
         # Player 2 초기화
         characters[1].x = 600
@@ -96,6 +98,8 @@ def reset_round():
         # Character3는 attack3_key_pressed도 있을 수 있음
         if hasattr(characters[1], 'attack3_key_pressed'):
             characters[1].attack3_key_pressed = False
+        # 대쉬 횟수 초기화
+        characters[1].dash_count = 1
 
     # UI 초기화
     ui1.update(200)

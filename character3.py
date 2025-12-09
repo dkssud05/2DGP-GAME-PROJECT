@@ -80,6 +80,7 @@ class Character3:
         self.dash_cooldown_time = 0
         self.dash_dir = 0
         self.dash_key_pressed = False
+        self.dash_count = 1  # 라운드당 사용 가능한 대쉬 횟수
 
     def update(self):
         frame_time = game_framework.frame_time
@@ -305,7 +306,7 @@ class Character3:
                     self.attack3_key_pressed = True
                     self.attack_id += 1  # 새로운 공격마다 ID 증가
             elif event.key == dash_key:
-                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and not self.is_jumping and self.dash_cooldown_time <= 0:
+                if not self.dash_key_pressed and not self.is_dashing and not self.is_attacking and not self.is_hit and not self.is_jumping and self.dash_cooldown_time <= 0 and self.dash_count > 0:
                     # 현재 방향키가 눌려있는 방향으로 대쉬
                     if self.keys.get(left_key, False):
                         self.dash_dir = -1
@@ -323,6 +324,8 @@ class Character3:
                     self.image = self.run_image
                     self.frame = 0.0
                     self.dash_key_pressed = True
+                    self.dash_count -= 1  # 대쉬 횟수 감소
+                    print(f"[Player {self.player_id}] 대쉬 사용! 남은 횟수: {self.dash_count}")
         elif event.type == SDL_KEYUP:
             if event.key == left_key or event.key == right_key or event.key == guard_key:
                 self.keys[event.key] = False
