@@ -183,9 +183,48 @@ def update():
         char1_bb = char1.get_bb()
         char2_bb = char2.get_bb()
         if collide(char1_bb, char2_bb):
-            # 충돌 시 이전 위치로 되돌림 (움직임 취소)
-            char1.x = char1_prev_x
-            char2.x = char2_prev_x
+            # 대쉬 중이면 충돌박스 밖으로 밀어냄
+            if char1.is_dashing or char2.is_dashing:
+                # 각 캐릭터의 중심점
+                char1_center_x = char1.x
+                char2_center_x = char2.x
+
+                # 충돌박스 너비의 절반
+                char1_half_width = (char1_bb[2] - char1_bb[0]) / 2
+                char2_half_width = (char2_bb[2] - char2_bb[0]) / 2
+
+                # 캐릭터1이 대쉬 중일 때
+                if char1.is_dashing:
+                    if char1_center_x < char2_center_x:
+                        # char1이 char2의 왼쪽에 있음 -> char1을 왼쪽 충돌박스 밖으로
+                        char1.x = char2_center_x - char2_half_width - char1_half_width
+                    else:
+                        # char1이 char2의 오른쪽에 있음 -> char1을 오른쪽 충돌박스 밖으로
+                        char1.x = char2_center_x + char2_half_width + char1_half_width
+
+                # 캐릭터2가 대쉬 중일 때
+                if char2.is_dashing:
+                    if char2_center_x < char1_center_x:
+                        # char2가 char1의 왼쪽에 있음 -> char2를 왼쪽 충돌박스 밖으로
+                        char2.x = char1_center_x - char1_half_width - char2_half_width
+                    else:
+                        # char2가 char1의 오른쪽에 있음 -> char2를 오른쪽 충돌박스 밖으로
+                        char2.x = char1_center_x + char1_half_width + char2_half_width
+
+                # 화면 경계 체크
+                if char1.x < 40:
+                    char1.x = 40
+                elif char1.x > 760:
+                    char1.x = 760
+
+                if char2.x < 40:
+                    char2.x = 40
+                elif char2.x > 760:
+                    char2.x = 760
+            else:
+                # 대쉬가 아니면 이전 위치로 되돌림
+                char1.x = char1_prev_x
+                char2.x = char2_prev_x
 
         if not round_over and not match_over:
             char1_attack_bb = char1.get_attack_bb()
