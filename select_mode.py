@@ -14,7 +14,7 @@ background = None
 def init():
     global font, background, selected_menu
     font = load_font('C:/Windows/Fonts/arial.ttf', 40)
-    background = load_image('title.png')
+    background = load_image('select_background.png')
     selected_menu = MENU_VS_MODE
 
 def finish():
